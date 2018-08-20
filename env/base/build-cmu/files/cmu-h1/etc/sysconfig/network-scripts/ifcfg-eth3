@@ -1,0 +1,8 @@
+DEVICE=eth3
+MASTER=bond0
+SLAVE=yes
+#MTU=9000
+TYPE=Ethernet
+USERCTL=yes
+NM_CONTROLLED=no
+ONBOOT=yes

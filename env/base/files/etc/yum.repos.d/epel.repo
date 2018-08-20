@@ -1,0 +1,5 @@
+[epel]
+name=epel
+baseurl=http://stx-prvsnr/vendor/centos/epel/
+enabled=1
+gpgcheck=0

@@ -1,0 +1,3 @@
+DARKHTTPD_ROOT="/prvsnr"
+DARKHTTPD_FLAGS="--log /var/log/darkhttpd.log --uid root --gid root"
+MIMETYPES="--mimetypes /etc/mime.types"

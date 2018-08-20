@@ -1,0 +1,5 @@
+[hermi]
+name=hermi
+baseurl=http://stx-prvsnr/vendor/hermi/
+enabled=1
+gpgcheck=0

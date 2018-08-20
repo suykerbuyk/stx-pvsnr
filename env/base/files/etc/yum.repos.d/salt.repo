@@ -1,0 +1,5 @@
+[salt]
+name=salt
+baseurl=http://stx-prvsnr/vendor/salt/
+enabled=1
+gpgcheck=0
