@@ -12,7 +12,30 @@ function showdone() {
 	echo "Success: Imaging done"
 	exit 0
 }
+function wipedisk() {
+# Destroy Raid file systems (should destroy LVM groups first!)
+if [ -d /dev/md/ ]; then
+	for dev in $(find /dev/md*p? -type b); do
+		wipefs -fa ${dev}
+	done
+fi
+RAID_MEMBERS=''
+for disk in $(blkid | grep 'linux_raid_member' | awk -F ':' '{print $1}'); do
+	echo adding: $disk
+	RAID_MEMBERS="${RAID_MEMBERS} ${disk}"
+done
+for raid in $(find /dev/ -type b -name "md*" | grep -v 'p'); do
+	mdadm --stop ${raid}
+done
+for disk in ${RAID_MEMBERS}; do
+	mdadm --zero-superblock "${disk}"
+done
 
+for disk in $(blkid | grep sd | grep 'LABEL'  | awk -F ':' '{print $1}' ); do
+	wipefs -fa ${disk}
+done
+partprobe
+}
 if [ $# != 2 ] ; then
 	usage "wrong number of parameters (expected 2)."
 fi
@@ -45,6 +68,10 @@ DONE_MARKER=/root/provisioning.done
 # echo MNT1:   $MNT1
 # echo MNT2:   $MNT2
 
+# Clean up all the stuff that is there
+wipedisk
+wipefs -fa "${DSK}"
+
 # Capture the complete command line to echo it later
 CMD="curl -s ${URL} | tar -xJOf - | dd of=${DSK} bs=1M conv=fdatasync"
 echo CMD: $CMD
@@ -71,7 +98,7 @@ parted "${DSK}" rm 1 >/dev/null
 parted "${DSK}" mkpart primary ext4 1049kb 12900MB >/dev/null
 
 # Create the second (/var) partition
-parted "${DSK}" mkpart primary ext4 12901MB 81601MB >/dev/null
+parted "${DSK}" mkpart primary ext4 12901MB '100%' >/dev/null
 
 # Set the "clean" flag on the resized root partition.
 e2fsck -fp "${DSK}1" >/dev/null

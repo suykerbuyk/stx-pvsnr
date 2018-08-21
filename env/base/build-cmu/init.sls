@@ -33,7 +33,7 @@ import-rpm-keys:
 
 update-packages:
     cmd.run:
-    - name: /bin/yum install -y --installroot=/part1/ tmux nfs-utils dnsmasq darkhttpd salt-minion salt-ssh salt 
+    - name: /bin/yum install -y --installroot=/part1/ tmux nfs-utils dnsmasq darkhttpd salt-minion salt-ssh salt salt-master
     - require:
         - import-rpm-keys
 
@@ -156,7 +156,7 @@ set-minion_id:
     - require:
         - update-packages
 
-/dev/md127:
+/dev/md0:
     raid.present:
     - level: 1
     - devices:
@@ -165,22 +165,22 @@ set-minion_id:
     - chunk: 256
     - run: True
     - unless:
-        - ls /dev/ | grep md127
+        - ls /dev/ | grep md0
 
 label-raid-disk:
     module.run:
     - name: partition.mklabel
-    - device: /dev/md127
+    - device: /dev/md0
     - label_type: msdos
     - require:
-        - /dev/md127
+        - /dev/md0
     - unless:
-        - fdisk -l /dev/md127 | grep 'Disk label type: dos'
+        - fdisk -l /dev/md0 | grep 'Disk label type: dos'
 
 make-swap-part:
     module.run:
     - name: partition.mkpartfs
-    - device: /dev/md127
+    - device: /dev/md0
     - part_type: primary
     - fs_type: linux-swap
     - start: 0GB
@@ -188,16 +188,16 @@ make-swap-part:
     - require:
         - label-raid-disk
     - unless:
-        - file.is_blkdev /dev/md127p1
+        - file.is_blkdev /dev/md0p1
 
 
 make-swap-fs:
     cmd.run:
-    - name: 'mkswap -U d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 -L swap /dev/md127p1'
+    - name: 'mkswap -U d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 -L swap /dev/md0p1'
     - require:
         - make-swap-part
     - unless:
-        - disk.blkid /dev/md127p1 | grep swap
+        - disk.blkid /dev/md0p1 | grep swap
 
 make-swap-fstab:
     file.append:
@@ -208,7 +208,7 @@ make-swap-fstab:
 make-opt-part:
     module.run:
     - name: partition.mkpartfs
-    - device: /dev/md127
+    - device: /dev/md0
     - part_type: primary
     - fs_type: ext2
     - start: 64GB
@@ -217,15 +217,15 @@ make-opt-part:
         - label-raid-disk
         - make-swap-fs
     - unless:
-        - file.is_blkdev /dev/md127p2
+        - file.is_blkdev /dev/md0p2
 
 make-opt-fs:
     cmd.run:
-    - name: 'mkfs.ext4 -U 8974698e-07c0-4e84-af44-55fc3d77fce8 -L opt /dev/md127p2'
+    - name: 'mkfs.ext4 -U 8974698e-07c0-4e84-af44-55fc3d77fce8 -L opt /dev/md0p2'
     - require:
         - make-opt-part
     - unless:
-        - disk.blkid /dev/md127p2 | grep ext
+        - disk.blkid /dev/md0p2 | grep ext
 
 make-opt-mntpoint:
     cmd.run:
@@ -236,12 +236,6 @@ make-opt-fstab:
     - name: /part1/etc/fstab
     - text:
         - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /opt/seagate ext4 defaults 1 1
-
-nfs-enable-service:
-    cmd.run:
-    - name: systemctl --root=/part1 enable nfs
-    - unless:
-        - file.access /etc/systemd/system/multi-user.target.wants/nfs-server.service f
 
 nfs-add-mount-dir:
     cmd.run:
@@ -261,8 +255,21 @@ darkhttp-enable-service:
     - unless:
         - file.access /etc/systemd/system/multi-user.target.wants/darkhttpd.service f
 
+nfs-enable-service:
+    cmd.run:
+    - name: systemctl --root=/part1 enable nfs
+    - unless:
+        - file.access /etc/systemd/system/multi-user.target.wants/nfs-server.service f
+
+
 dnsmasq-enable-service:
     cmd.run:
     - name: systemctl --root=/part1 enable dnsmasq
     - unless:
         - file.access /etc/systemd/system/multi-user.target.wants/dnsmasq.service f
+
+salt-master-enable-service:
+    cmd.run:
+    - name: systemctl --root=/part1 enable salt-master
+    - unless:
+        - file.access /etc/systemd/system/multi-user.target.wants/salt-master.service f

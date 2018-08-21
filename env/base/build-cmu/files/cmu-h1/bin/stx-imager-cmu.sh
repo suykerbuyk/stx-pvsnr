@@ -71,7 +71,7 @@ parted "${DSK}" rm 1 >/dev/null
 parted "${DSK}" mkpart primary ext4 1049kb 12900MB >/dev/null
 
 # Create the second (/var) partition
-parted "${DSK}" mkpart primary ext4 12901MB 81601MB >/dev/null
+parted "${DSK}" mkpart primary ext4 12901MB '100%' >/dev/null
 
 # Set the "clean" flag on the resized root partition.
 e2fsck -fp "${DSK}1" >/dev/null

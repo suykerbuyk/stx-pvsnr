@@ -19,6 +19,14 @@ live-sync-stx-imager:
         - group: root
         - mode: 755
 
+live-sync-stx-wipe-disk:
+    file.managed:
+        - name: /bin/stx-wipe-disk.sh
+        - source: salt://files/bin/stx-wipe-disk.sh
+        - user: root
+        - group: root
+        - mode: 755
+
 live-etc-yum.repos.d:
     file.recurse:
         - name: /etc/yum.repos.d

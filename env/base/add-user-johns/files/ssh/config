@@ -1,0 +1,7 @@
+Host 10.*
+UserKnownHostsFile = /dev/null
+StrictHostKeyChecking = no
+
+Host qb*
+UserKnownHostsFile = /dev/null
+StrictHostKeyChecking = no

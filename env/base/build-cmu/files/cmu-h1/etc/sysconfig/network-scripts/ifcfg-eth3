@@ -1,5 +1,5 @@
 DEVICE=eth3
-MASTER=bond0
+MASTER=mgmt0
 SLAVE=yes
 #MTU=9000
 TYPE=Ethernet
