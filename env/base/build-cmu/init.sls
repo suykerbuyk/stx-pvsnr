@@ -167,6 +167,14 @@ set-minion_id:
     - unless:
         - ls /dev/ | grep md0
 
+update-mdadm-conf:
+    cmd.run:
+    - name: 'mdadm --detail --scan /dev/md0 >/part1/etc/mdadm.conf'
+    - shell: /bin/bash
+    - python_script: True
+    - require:
+        - /dev/md0
+
 label-raid-disk:
     module.run:
     - name: partition.mklabel
