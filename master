@@ -856,6 +856,13 @@ file_roots:
 #  - hiera: /etc/hiera.yaml
 #  - cmd_yaml: cat /etc/salt/yaml
 
+pillar_roots:
+   base:
+     - /etc/salt/pillar/base
+   dev:
+     - /etc/salt/pillar/dev
+   prod:
+     - /etc/salt/pillar/prod
 
 # A list of paths to be recursively decrypted during pillar compilation.
 # Entries in this list can be formatted either as a simple string, or as a
