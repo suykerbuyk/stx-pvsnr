@@ -48,12 +48,18 @@ def get_bmc_macs():
 		for line in ipmi_ret['stdout'].splitlines():
 			if line.startswith('MAC Address'):
 				mac = line.split()[3]
+				mac_safe = mac.replace(':','_')
 				grain_name='port' + str(ipmi_port) + '_mac'
+				grain_safe=grain_name + '_safe'
 				ret['bmc_network'].append({grain_name: mac})
+				ret['bmc_network'].append({grain_safe: mac_safe})
 			elif line.startswith('IP Address       '):
 				ipv4 = line.split()[3]
+				ipv4_safe = ipv4.replace('.','_')
 				grain_name='port' + str(ipmi_port) + '_ipv4'
+				grain_safe=grain_name + '_safe'
 				ret['bmc_network'].append({grain_name: ipv4})
+				ret['bmc_network'].append({grain_safe: ipv4_safe})
 	return ret
 
 if __name__ == "__main__":
