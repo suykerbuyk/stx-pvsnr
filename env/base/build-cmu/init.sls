@@ -253,7 +253,7 @@ nfs-add-fstab:
     file.append:
     - name: /part1/etc/fstab
     - text:
-        - '# stx-prvsnr.mero.colo.seagate.com:/prvsnr /prvsnr nfs4 defaults 0 0'
+        - 'stx-prvsnr.mero.colo.seagate.com:/prvsnr /prvsnr nfs4 defaults 0 0'
     - require:
         - make-opt-fstab
 

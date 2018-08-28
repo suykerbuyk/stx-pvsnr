@@ -1,0 +1,13 @@
+DEVICE=bond0
+#BONDING_OPTS="mode=4 miimon=100 lacp_rate=1 xmit_hash_policy=layer3+4"
+BONDING_OPTS="mode=4 miimon=100 lacp_rate=1"
+TYPE=Bond
+BONDING_MASTER=yes
+BOOTPROTO=none
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=no
+NAME=bond0
+UUID=1a75eef0-f2c9-417d-81a0-fabab4a1531c
+ONBOOT=yes
+MTU=9000
