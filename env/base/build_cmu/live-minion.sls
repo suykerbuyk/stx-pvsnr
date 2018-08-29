@@ -15,7 +15,7 @@ live-sync-termsize:
 
 live-sync-stx-imager:
     file.managed:
-        - name: /bin/stx-imager.sh
+        - name: /bin/stx-imager-cmu.sh
         - source: salt://files/bin/stx-imager-cmu.sh
         - user: root
         - group: root
