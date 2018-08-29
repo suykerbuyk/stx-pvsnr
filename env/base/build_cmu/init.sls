@@ -151,7 +151,7 @@ set_bonding_max:
     file.managed:
     - name: /part1/etc/modprobe.d/bonding.conf
     - mode: 0644
-    - contents: max_bonds=0
+    - contents: options bonding max_bonds=0
 
 set_minion_id:
     file.managed:
