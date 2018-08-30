@@ -6,3 +6,8 @@ node:
     00_1e_67_68_df_7e:
     - hostname: stx-prvsnr
     - role: prvsnr
+
+    00_50_cc_79_b2_53:
+    - hostname: ssu2-h1
+    - role: ssu
+

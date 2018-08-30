@@ -416,7 +416,15 @@ interface: 172.16.1.41
 #file_roots:
 #  base:
 #    - /srv/salt
-
+file_roots:
+   base:
+     - /prvsnr/salt/config.stx-prvsnr/env/base
+   dev:
+     - /prvsnr/salt/config.stx-prvsnr/env/dev
+   prod:
+     - /prvsnr/salt/config.stx-prvsnr/env/prod
+   staging:
+     - /prvsnr/salt/config.stx-prvsnr/env/staging
 # The hash_type is the hash to use when discovering the hash of a file on
 # the master server. The default is md5, but sha1, sha224, sha256, sha384
 # and sha512 are also supported.
@@ -533,6 +541,14 @@ interface: 172.16.1.41
 #ext_pillar:
 #  - hiera: /etc/hiera.yaml
 #  - cmd_yaml: cat /etc/salt/yaml
+
+pillar_roots:
+   base:
+     - /prvsnr/salt/config.stx-prvsnr/pillar/base
+   dev:
+     - /prvsnr/salt/config.stx-prvsnr/pillar/dev
+   prod:
+     - /prvsnr/salt/config.stx-prvsnr/pillar/prod
 
 # The ext_pillar_first option allows for external pillar sources to populate
 # before file system pillar. This allows for targeting file system pillar from

@@ -3,7 +3,7 @@ include:
 
 image_disk:
     cmd.run:
-    - name: /bin/stx-imager-cmu.sh /dev/sda http://stx-prvsnr/sage/images/sage-CentOS-7.5.x86_64-7.5.0_3-k3.10.0.txz
+    - name: /bin/stx-imager-ssu.sh /dev/sda http://stx-prvsnr/sage/images/sage-CentOS-7.5.x86_64-7.5.0_3-k3.10.0.txz
     - shell: /bin/bash
     - require:
         - sls: live_minion
@@ -33,14 +33,14 @@ import_rpm_keys:
 
 update_packages:
     cmd.run:
-    - name: /bin/yum install -y --installroot=/part1/ tmux nfs-utils dnsmasq darkhttpd salt-minion salt-ssh salt salt-master
+    - name: /bin/yum install -y --installroot=/part1/ salt-minion 
     - require:
         - import_rpm_keys
 
 sync_etc_salt:
     file.recurse:
     - name: /part1/etc/salt
-    - source: salt://build_cmu/files/etc/salt
+    - source: salt://build_ssu/files/etc/salt
     - clean: True
     - keep_source: False
     - dir_mode: 0755
@@ -53,7 +53,7 @@ sync_etc_salt:
 sync_bin:
     file.recurse:
     - name: /part1/bin
-    - source: salt://build_cmu/files/bin
+    - source: salt://build_ssu/files/bin
     - keep_source: False
     - dir_mode: 0755
     - file_mode: 0755
@@ -65,7 +65,7 @@ sync_bin:
 sync_network_ifcfg:
     file.recurse:
     - name: /part1/etc/sysconfig/network-scripts
-    - source: salt://build_cmu/files/etc/sysconfig/network-scripts
+    - source: salt://build_ssu/files/etc/sysconfig/network-scripts
     - keep_source: False
     - dir_mode: 0644
     - file_mode: 0644
@@ -78,7 +78,7 @@ sync_network_ifcfg:
 sync_root_ssh:
     file.recurse:
     - name: /part1/root/.ssh
-    - source: salt://build_cmu/files/root/ssh
+    - source: salt://build_ssu/files/root/ssh
     - keep_source: False
     - dir_mode: 0700
     - file_mode: 0600
@@ -93,7 +93,7 @@ sync_root_ssh:
 sync_etc_ssh:
     file.recurse:
     - name: /part1/etc/ssh
-    - source: salt://build_cmu/files/etc/ssh
+    - source: salt://build_ssu/files/etc/ssh
     - keep_source: False
     - dir_mode: 0755
     - file_mode: keep
@@ -105,47 +105,11 @@ sync_etc_ssh:
     - require:
         - update_packages
 
-set_etc_dnsmasq.conf:
-    file.managed:
-    - name: /part1/etc/dnsmasq.conf
-    - source: salt://build_cmu/files/etc/dnsmasq.conf
-    - mode: 0644
-    - user: root
-    - group: root
-    - require:
-        - update_packages
-
-set_etc_sysconfig_darkhttpd:
-    file.managed:
-    - name: /part1/etc/sysconfig/darkhttpd
-    - source: salt://build_cmu/files/etc/sysconfig/darkhttpd
-    - mode: 0644
-    - user: root
-    - group: root
-    - require:
-        - update_packages
-
-set_etc_hosts:
-    file.managed:
-    - name: /part1/etc/hosts
-    - source: salt://build_cmu/files/etc/hosts
-    - mode: 0644
-    - user: root
-    - group: root
-
-set_etc_hosts.dnsmasq:
-    file.managed:
-    - name: /part1/etc/hosts.dnsmasq
-    - source: salt://build_cmu/files/etc/hosts.dnsmasq
-    - mode: 0644
-    - user: root
-    - group: root
-
 set_hostname:
     file.managed:
     - name: /part1/etc/hostname
     - mode: 0644
-    - contents: cmu-h1
+    - contents: ssu2-h1
 
 set_bonding_max:
     file.managed:
@@ -158,7 +122,7 @@ set_minion_id:
     - name: /part1/etc/salt/minion_id
     - mode: 0644
     - contents:
-        cmu-h1
+        ssu-h1
     - require:
         - update_packages
 
@@ -166,8 +130,8 @@ set_minion_id:
     raid.present:
     - level: 1
     - devices:
-        - /dev/sdd
-        - /dev/sde
+        - /dev/sdn
+        - /dev/sdbr
     - chunk: 256
     - run: True
     - unless:
@@ -185,7 +149,7 @@ label_raid_disk:
     module.run:
     - name: partition.mklabel
     - device: /dev/md0
-    - label_type: msdos
+    - label_type: gpt
     - require:
         - /dev/md0
     - unless:
@@ -198,7 +162,7 @@ make_swap_part:
     - part_type: primary
     - fs_type: linux-swap
     - start: 0GB
-    - end: 64GB
+    - end: 50%
     - require:
         - label_raid_disk
     - unless:
@@ -225,7 +189,7 @@ make_opt_part:
     - device: /dev/md0
     - part_type: primary
     - fs_type: ext2
-    - start: 64GB
+    - start: 50%
     - end: 100%
     - require:
         - label_raid_disk
@@ -263,27 +227,13 @@ nfs_add_fstab:
     - require:
         - make_opt_fstab
 
-darkhttp_enable_service:
+salt_minion_enable_service:
     cmd.run:
-    - name: systemctl --root=/part1 enable darkhttpd
+    - name: systemctl --root=/part1 enable salt-minion
     - unless:
-        - file.access /etc/systemd/system/multi-user.target.wants/darkhttpd.service f
+        - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f
 
-nfs_enable_service:
+salt_disable_firewalld:
     cmd.run:
-    - name: systemctl --root=/part1 enable nfs
+    - name: systemctl --root=/part1 disable firewalld
     - unless:
-        - file.access /etc/systemd/system/multi-user.target.wants/nfs-server.service f
-
-
-dnsmasq_enable_service:
-    cmd.run:
-    - name: systemctl --root=/part1 enable dnsmasq
-    - unless:
-        - file.access /etc/systemd/system/multi-user.target.wants/dnsmasq.service f
-
-salt_master_enable_service:
-    cmd.run:
-    - name: systemctl --root=/part1 enable salt-master
-    - unless:
-        - file.access /etc/systemd/system/multi-user.target.wants/salt-master.service f

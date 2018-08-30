@@ -1,6 +1,8 @@
+# vim: modeline tabstop=4 expandtab shiftwidth=4 softtabstop=4 ai
+
 sync-custom-modules:
     module.run:
-        - name: saltutil.sync_all
+        - name: saltutil.sync_modules
         - refresh: True
 
 live-sync-termsize:
@@ -11,26 +13,10 @@ live-sync-termsize:
         - group: root
         - mode: 755
 
-live-sync-stx-cmu-imager:
-    file.managed:
-        - name: /bin/stx-imager-cmu.sh
-        - source: salt://files/bin/stx-imager-cmu.sh
-        - user: root
-        - group: root
-        - mode: 755
-
-live-sync-stx-ssu-imager:
+live-sync-stx-imager:
     file.managed:
         - name: /bin/stx-imager-ssu.sh
         - source: salt://files/bin/stx-imager-ssu.sh
-        - user: root
-        - group: root
-        - mode: 755
-
-live-sync-stx-wipe-disk:
-    file.managed:
-        - name: /bin/stx-wipe-disk.sh
-        - source: salt://files/bin/stx-wipe-disk.sh
         - user: root
         - group: root
         - mode: 755
@@ -45,3 +31,4 @@ live-etc-yum.repos.d:
         - file_mode: 0644
         - keep_symlinks: False
         - include_empty: True
+

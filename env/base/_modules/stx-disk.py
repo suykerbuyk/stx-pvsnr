@@ -1,7 +1,6 @@
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 ai
 import os,sys,re
 from collections import defaultdict
-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 ai
 
 def by_device():
     '''
@@ -120,4 +119,3 @@ def by_criteria(min_gb = 0, max_gb=-1, model_substr=str(""), vendor_substr=str("
         matching.append(dev)
     ret={"matching": matching, "rejected": rejected}
     return ret
-

@@ -2,4 +2,4 @@
 name=base
 baseurl=http://stx-prvsnr/vendor/centos/7.5.1804/
 enabled=1
-gpgcheck=0
+gpgcheck=1

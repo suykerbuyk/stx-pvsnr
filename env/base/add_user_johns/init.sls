@@ -5,6 +5,7 @@ add_user_johns:
         - wheel
     - shell: /bin/bash
     - createhome: True
+    - password: $1$xd3Jjbbl$daitEGGRJFgr292j0KbH91
 
 copy_bashrc:
     file.managed:
@@ -58,7 +59,7 @@ add_bin_tm:
     - group: johns
     - mode: 0755
     - require:
-        - mk-local-bin
+        - mk_local_bin
     - unless:
         - file.access /home/johns/bin/tm f
 
