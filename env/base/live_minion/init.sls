@@ -27,6 +27,14 @@ live-sync-stx-ssu-imager:
         - group: root
         - mode: 755
 
+live-sync-stx-blade-imager:
+    file.managed:
+        - name: /bin/stx-imager-blade.sh
+        - source: salt://files/bin/stx-imager-blade.sh
+        - user: root
+        - group: root
+        - mode: 755
+
 live-sync-stx-wipe-disk:
     file.managed:
         - name: /bin/stx-wipe-disk.sh

@@ -109,7 +109,7 @@ set_hostname:
     file.managed:
     - name: /part1/etc/hostname
     - mode: 0644
-    - contents: ssu2-h1
+    - contents: ssu7-h1
 
 set_bonding_max:
     file.managed:
@@ -122,7 +122,7 @@ set_minion_id:
     - name: /part1/etc/salt/minion_id
     - mode: 0644
     - contents:
-        ssu-h1
+        ssu7-h1
     - require:
         - update_packages
 
@@ -130,8 +130,8 @@ set_minion_id:
     raid.present:
     - level: 1
     - devices:
-        - /dev/sdn
-        - /dev/sdbr
+        - /dev/sdq
+        - /dev/sdbt
     - chunk: 256
     - run: True
     - unless:
@@ -207,25 +207,13 @@ make_opt_fs:
 
 make-opt-mntpoint:
     cmd.run:
-    - name: '[ -d /part1/opt/seagate ] || mkdir -p /part1/opt/seagate'
+    - name: '[ -d /part1/var/mero ] || mkdir -p /part1/var/mero'
 
 make_opt_fstab:
     file.append:
     - name: /part1/etc/fstab
     - text:
-        - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /opt/seagate ext4 defaults 1 1
-
-nfs_add_mount_dir:
-    cmd.run:
-    - name: '[ -d /part1/prvsnr ] || mkdir /part1/prvsnr'
-
-nfs_add_fstab:
-    file.append:
-    - name: /part1/etc/fstab
-    - text:
-        - 'stx-prvsnr.mero.colo.seagate.com:/prvsnr /prvsnr nfs4 defaults 0 0'
-    - require:
-        - make_opt_fstab
+        - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /var/mero ext4 defaults 1 1
 
 salt_minion_enable_service:
     cmd.run:

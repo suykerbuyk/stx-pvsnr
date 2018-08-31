@@ -71,7 +71,8 @@ parted "${DSK}" rm 1 >/dev/null
 parted "${DSK}" mkpart primary ext4 1049kb 12900MB >/dev/null
 
 # Create the second (/var) partition
-parted "${DSK}" mkpart primary ext4 12901MB 81601MB >/dev/null
+#parted "${DSK}" mkpart primary ext4 12901MB 81601MB >/dev/null
+parted "${DSK}" mkpart primary ext4 12901MB 100% >/dev/null
 
 # Set the "clean" flag on the resized root partition.
 e2fsck -fp "${DSK}1" >/dev/null
@@ -115,50 +116,7 @@ rmdir "${MNT2}"
 mount /dev/disk/by-uuid/${UUID_P2} ${MNT1}/var
 
 # Set the name of the salt master
-sed -i "s/^#* *master:.*/master: stx-prvsnr/g" ${MNT1}/etc/salt/minion
-
-# Clean up old repos
-rm -rf ${MNT1}/etc/yum.repos.d/*
-
-
-cat >${MNT1}/etc/yum.repos.d/base.repo << EOF
-[base]
-name=base
-baseurl=http://stx-prvsnr/vendor/centos/7.5.1804/
-enabled=1
-EOF
-
-cat >${MNT1}/etc/yum.repos.d/centos.repo << EOF
-[epel]
-name=epel
-baseurl=http://stx-prvsnr/vendor/centos/epel/
-enabled=1
-gpgcheck=0
-EOF
-
-
-cat >${MNT1}/etc/yum.repos.d/hermi << EOF
-[hermi]
-name=hermi
-baseurl=http://stx-prvsnr/vendor/hermi/
-enabled=1
-gpgcheck=0
-EOF
-
-rpm --root ${MNT1}/ --import  http://stx-prvsnr/vendor/centos/7.5.1804/RPM-GPG-KEY-CentOS-7
-yum clean all --installroot ${MNT1}/
-yum update --installroot ${MNT1}/
-yum install -y salt-minion  --installroot ${MNT1}/
-
-# Copy preauthenticated salt minion keys
-[ -d ${MNT1}/etc/salt/pki/minion/ ] || mkdir -p ${MNT1}/etc/salt/pki/minion/
-rsync -ar /etc/salt/pki/minion/ ${MNT1}/etc/salt/pki/minion/ --delete-after
-rsync -ar /root/.ssh/ ${MNT1}/root/.ssh/ --delete-after
-rsync -ar /etc/ssh/ ${MNT1}/etc/ssh/ --delete-after
-
-# if set, copy our minion ID to the new image.
-[ -e /etc/salt/minion_id ] && rsync /etc/salt/minion_id ${MNT1}/etc/salt/minion_id
-systemctl --root=${MNT1}/ enable salt-minion
+#sed -i "s/^#* *master:.*/master: stx-prvsnr/g" ${MNT1}/etc/salt/minion
 
 # Set our imaging done flag(s) on both live root and imaged root.
 date --rfc-3339=seconds >${DONE_MARKER}

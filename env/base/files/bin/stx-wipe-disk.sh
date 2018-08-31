@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+[ -f /root/provisioning.done ] || rm -f /root/provisioning.done
 
 # Destroy Raid file systems (should destroy LVM groups first!)
 if [ -d /dev/md/ ]; then
