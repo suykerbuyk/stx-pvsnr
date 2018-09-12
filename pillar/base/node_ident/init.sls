@@ -11,3 +11,7 @@ node:
     - hostname: ssu2-h1
     - role: ssu
 
+    00_1e_67_66_d9_52:
+    - hostname: qb02n1-m06
+    - role: client
+
