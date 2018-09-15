@@ -1,12 +1,19 @@
 include:
     - live_minion
 
+wipe_disk:
+  cmd.run:
+    - name: /bin/stx-wipe-disk.sh
+    - shell: /bin/bash
+    - require:
+      - sls: live_minion
+
 image_disk:
   cmd.run:
   - name: /bin/stx-imager-blade.sh /dev/sda  http://stx-prvsnr/sage/images/sage-CentOS-7.5.x86_64-7.5.0_3-k3.10.0.txz
   - shell: /bin/bash
   - require:
-    - sls: live_minion
+    - wipe_disk
   - unless:
     - file.access /root/provisioning.done f 
 
@@ -62,6 +69,18 @@ sync_bin:
     - require:
         - update_packages
 
+sync_network:
+    file.recurse:
+    - name: /part1/etc/sysconfig/
+    - source: salt://build_blade/files/etc/sysconfig
+    - keep_source: False
+    - dir_mode: 0755
+    - file_mode: 0755
+    - keep_symlinks: False
+    - include_empty: True
+    - require:
+        - update_packages
+
 sync_root_ssh:
     file.recurse:
     - name: /part1/root/.ssh
@@ -92,3 +111,8 @@ sync_etc_ssh:
     - require:
         - update_packages
 
+salt-minion_enable_service:
+    cmd.run:
+    - name: systemctl --root=/part1 enable salt-minion
+    - unless:
+        - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f

@@ -1,7 +1,22 @@
 #!/bin/sh
 
 set -e
+partprobe
 [ -f /root/provisioning.done ] || rm -f /root/provisioning.done
+
+if [ -d /part1/var ] ; then
+	[ 0 == $(mountpoint '/part1/var') ] || umount /part1/var
+	[ 0 == $(mountpoint '/part1') ] || umount /part1
+fi
+
+for grp in "$(vgs --noheadings --all --unbuffered -o vg_name)"; do
+	grp=${grp//[[:blank:]]/}
+	if [ "${grp}x" != "x" ]; then
+		echo "___${grp}___"
+		vgchange -a n "${grp}"
+		vgremove -y "${grp}"
+	fi
+done
 
 # Destroy Raid file systems (should destroy LVM groups first!)
 if [ -d /dev/md/ ]; then

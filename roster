@@ -1,4 +1,34 @@
 qb01n2-m06:
   user: root
-  host: 10.230.161.21
-  passwd: dcouser
+  host: qb01n2-m06
+  passwd: Xyratex
+
+qb01n3-m06:
+  user: root
+  host: qb01n3-m06
+  passwd: Xyratex
+
+qb01n4-m06:
+  user: root
+  host: qb01n4-m06
+  passwd: Xyratex
+
+qb02n1-m06:
+  user: root
+  host: qb02n1-m06
+  passwd: Xyratex
+
+qb02n2-m06:
+  user: root
+  host: qb01n2-m06
+  passwd: Xyratex
+
+qb02n3-m06:
+  user: root
+  host: qb01n3-m06
+  passwd: Xyratex
+
+qb02n4-m06:
+  user: root
+  host: qb02n4-m06
+  passwd: Xyratex
