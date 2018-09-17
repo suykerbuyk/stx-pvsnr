@@ -1,3 +1,6 @@
+{% set node_role = salt['pillar.get'] ('node:%s:role' | format(salt['grains.get']('bmc_network:port1_mac_safe'))) %}
+{% set node_hostname = salt['pillar.get'] ('node:%s:hostname' | format(salt['grains.get']('bmc_network:port1_mac_safe'))) %}
+
 include:
     - live_minion
 
