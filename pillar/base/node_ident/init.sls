@@ -34,3 +34,7 @@ node:
   00_1e_67_66_f0_ba:
     - hostname: qb02n4-m06
     - role: s3_client
+
+  00_1e_67_68_d6_c6:
+    - hostname: qb03n1-m06
+    - role: s3_client

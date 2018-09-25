@@ -1,5 +1,14 @@
-{% set node_role = salt['pillar.get'] ('node:%s:role' | format(salt['grains.get']('bmc_network:port1_mac_safe'))) %}
-{% set node_hostname = salt['pillar.get'] ('node:%s:hostname' | format(salt['grains.get']('bmc_network:port1_mac_safe'))) %}
+{% set port1_mac_safe = salt['grains.get']('bmc_network:port1_mac_safe') %}
+{% set node_role = salt['pillar.get'] ('node:%s:role' | format(port1_mac_safe)) %}
+{% set node_name = salt['pillar.get'] ('node:%s:hostname' | format(port1_mac_safe)) %}
+
+{% if node_name == '' %}
+{{ raise('node_name pillar data not found for bmc port1 mac address {0}'.format(port1_mac_safe)) }}
+{% endif %}
+
+{% if node_role == '' %}
+{{ raise('node_role pillar data not found for bmc port1 mac address {0}'.format(port1_mac_safe)) }}
+{% endif %}
 
 include:
     - live_minion
