@@ -1,5 +1,6 @@
 {% set bci_url='http://stx-prvsnr/sage/images' %}
-{% set bci_default_img='sage-CentOS-7.5.x86_64-7.5.0_3-k3.10.0.txz' %}
+{#% set bci_default_img='sage-CentOS-7.5.x86_64-7.5.0_3-k3.10.0.txz' %#}
+{% set bci_default_img='sage-CentOS-7.5.x86_64-7.5.0_4-k3.10.0.raw.gz' %}
 
 stx_bci:
   cmu:
