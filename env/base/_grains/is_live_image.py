@@ -5,9 +5,9 @@ import logging
 import re
 
 # Import salt libs
-import salt.utils.files
-import salt.utils.path
-import salt.utils.platform
+#import salt.utils.files
+#import salt.utils.path
+#import salt.utils.platform
 
 # Solve the Chicken and egg problem where grains need to run before any
 # of the modules are loaded and are generally available for any usage.

@@ -38,3 +38,5 @@ node:
   00_1e_67_68_d6_c6:
     - hostname: qb03n1-m06
     - role: s3_client
+    - mgmt0: '00:1e:67:68:d6:c4'
+    - data0: 'e4:1d:2d:6f:0c:41'
