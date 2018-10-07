@@ -4,6 +4,12 @@ roster_defaults:
   priv: /root/.ssh/id_rsa
   tty: True
 
+cmu-h2:
+  user: root
+  host: 10.230.166.52
+  passwd: Xyratex
+  #cmu-h2
+
 10.230.166.88:
   user: root
   host: 10.230.166.88
