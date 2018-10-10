@@ -7,9 +7,9 @@ fun! SetupCommandAlias(from, to)
     \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
     \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfun
-
 call SetupCommandAlias("W","w")
 call SetupCommandAlias("Wq","wq")
 call SetupCommandAlias("WQ","wq")
 call SetupCommandAlias("Q","q")
+noremap jk <esc>
 syntax on
