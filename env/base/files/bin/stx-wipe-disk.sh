@@ -4,10 +4,8 @@ set -e
 partprobe
 [ -f /root/provisioning.done ] || rm -f /root/provisioning.done
 
-if [ -d /part1/var ] ; then
-	[ 0 == $(mountpoint '/part1/var') ] || umount /part1/var
-	[ 0 == $(mountpoint '/part1') ] || umount /part1
-fi
+[ 0 == $(mountpoint -q '/part1/var') ] || umount /part1/var
+[ 0 == $(mountpoint -q '/part1') ] || umount /part1
 
 for grp in "$(vgs --noheadings --all --unbuffered -o vg_name)"; do
 	grp=${grp//[[:blank:]]/}
