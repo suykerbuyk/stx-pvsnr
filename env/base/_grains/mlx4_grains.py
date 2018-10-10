@@ -1,19 +1,43 @@
 #!/usr/bin/python
 # vim: fenc=utf-8:ts=4:sw=4:sta:noet:sts=4:fdm=marker:ai
 
-import logging, os
+import logging, os, fnmatch
 
-opts = salt.config.minion_config('/etc/salt/minion')
-opts['grains'] = {}
-__salt__ = salt.loader.minion_mods(opts, whitelist=['stx_mlx4'])
+mlx_port_file_list = []
 
-log = logging.getLogger(__name__)
+def _port_files():
+	'''
+	returns a list of port device control files
+	'''
+	if len(mlx_port_file_list) > 0:
+		return mlx_port_file_list
+
+	directory = '/sys/devices/'
+	pattern = 'mlx4_port[1-2]'
+	for root, dirs, files in os.walk(directory):
+		for basename in files:
+			if fnmatch.fnmatch(basename, pattern):
+				port_device_file = os.path.join(root,basename)
+				mlx_port_file_list.append(port_device_file)
+	return mlx_port_file_list
+
+def _pci_slots():
+	'''
+	returns a list of the pci slots appropriate for rdma.conf
+	'''
+	slots = set()
+	for port_file in _port_files():
+		slot = os.path.basename(
+			os.path.dirname(
+			os.path.dirname(port_file)))
+		slots.add(slot)
+	return list(slots)
 
 def check_for_mellanox():
-	if __salt__['stx_mlx4.present']():
-		return {'has_mlx4', 'True'}
+	if len(_port_files()) > 0:
+		return {'mlx_present', True}
 	else:
-		return {'has_mlx4', 'False'}
+		return {'mlx_present', False}
 
 
 if __name__ == "__main__":

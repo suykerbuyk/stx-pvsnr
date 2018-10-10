@@ -17,17 +17,22 @@ node:
   # #############
   # Hermi 02 rack
   00_50_cc_7a_3e_09:
-    - hostname: cmu-h2
+    - rack: h2
     - role: cmu
-    - mgmt_ext:  '00:50:cc:7a:3e:07'
-    - mgmt_int:  '00:50:cc:7a:3e:08'
-    - mgmt0:     '172.16.12.41'
+    - hostname: cmu-h2
+    - ext_p1:    '00:50:cc:7a:3e:07'
+    - ext_p2:    '00:50:cc:7a:3e:08'
+    - int_p1:    '00:50:cc:7a:3e:0b'
+    - int_p2:    '00:50:cc:7a:3e:0c'
+    - mgmt0_ip:  '172.16.12.41'
+    - data0_ip:  '172.19.12.41'
     - ipmi_port: '00:50:cc:7a:3e:09'
     - ipmi:      '10.230.166.53'
 
   00_50_cc_79_bd_f9:
-    - hostname: ssu1-h2
+    - rack: h2
     - role: ssu
+    - hostname: ssu1-h2
     - mgmt_port1: '00:50:cc:79:bd:f7'
     - mgmt_port2: '00:50:cc:79:bd:f8'
     - ipmi_port:  '00:50:cc:79:bd:f9'
@@ -38,8 +43,9 @@ node:
     - ipmi:       '172.16.12.101'
 
   00_50_cc_79_bd_d5:
-    - hostname: ssu2-h2
+    - rack: h2
     - role: ssu
+    - hostname: ssu2-h2
     - mgmt_port1: '00:50:cc:79:bd:d3'
     - mgmt_port2: '00:50:cc:79:bd:d4'
     - ipmi_port:  '00:50:cc:79:bd:d5'
@@ -50,8 +56,9 @@ node:
     - ipmi:       '172.16.12.102'
 
   00_50_cc_79_bd_ff:
-    - hostname: ssu3-h2
+    - rack: h2
     - role: ssu
+    - hostname: ssu3-h2
     - mgmt_port1: '00:50:cc:79:bd:fd'
     - mgmt_port2: '00:50:cc:79:bd:fe'
     - ipmi_port:  '00:50:cc:79:bd:ff'
@@ -62,8 +69,9 @@ node:
     - ipmi:       '172.16.12.103'
 
   00_50_cc_79_bd_c3:
-    - hostname: ssu4-h2
+    - rack: h2
     - role: ssu
+    - hostname: ssu4-h2
     - mgmt_port1: '00:50:cc:79:bd:c1'
     - mgmt_port2: '00:50:cc:79:bd:c2'
     - ipmi_port:  '00:50:cc:79:bd:c3'
@@ -74,8 +82,9 @@ node:
     - ipmi:       '172.16.12.104'
 
   00_50_cc_79_bd_bd:
-    - hostname: ssu5-h2
+    - rack: h2
     - role: ssu
+    - hostname: ssu5-h2
     - mgmt_port1: '00:50:cc:79:bd:bb'
     - mgmt_port2: '00:50:cc:79:bd:bc'
     - ipmi_port:  '00:50:cc:79:bd:bd'
@@ -86,8 +95,9 @@ node:
     - mgmt0:      '172.16.12.5'
 
   00_50_cc_79_bd_db:
-    - hostname: ssu6-h2
+    - rack: h2
     - role: ssu
+    - hostname: ssu6-h2
     - mgmt_port1: '00:50:cc:79:bd:d9'
     - mgmt_port2: '00:50:cc:79:bd:da'
     - ipmi_port:  '00:50:CC:79:bd:db'
@@ -99,36 +109,44 @@ node:
 
   # mero06 clients
   00_1e_67_68_cc_0e:
+    - rack: m06
     - hostname: qb01n3-m06
     - role: s3_client
 
   00_1e_67_68_d7_ce:
+    - rack: m06
     - hostname: qb01n4-m06
     - role: s3_client
 
   00_1e_67_66_d9_52:
+    - rack: m06
     - hostname: qb02n1-m06
     - role: s3_client
 
   00_1e_67_66_df_a2:
+    - rack: m06
     - hostname: qb02n2-m06
     - role: s3_client
 
   00_1e_67_66_e8_4a:
+    -rack: m06
     - hostname: qb02n3-m06
     - role: s3_client
 
   00_1e_67_66_f0_ba:
+    - rack: m06
     - hostname: qb02n4-m06
     - role: s3_client
 
   00_1e_67_68_d6_c6:
+    - rack: m06
     - hostname: qb03n1-m06
     - role: s3_client
     - mgmt0: '00:1e:67:68:d6:c4'
     - data0: 'e4:1d:2d:6f:0c:41'
 
   00_1e_67_68_c8_ae:
+    - rack: m06
     - hostname: qb03n4-m06
     - role: s3_client
     - mgmt0: '00:1e:67:68:c8:ac'
