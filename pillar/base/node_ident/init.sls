@@ -129,7 +129,7 @@ node:
     - role: s3_client
 
   00_1e_67_66_e8_4a:
-    -rack: m06
+    - rack: m06
     - hostname: qb02n3-m06
     - role: s3_client
 
