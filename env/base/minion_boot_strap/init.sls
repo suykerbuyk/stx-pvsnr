@@ -44,15 +44,12 @@ salt-minion:
 /etc/salt/grains:
   file.managed:
     - contents: |
-        master: stx-prvsnr
-
-        grains:
-          stx:
-            node:
-              - role: {{node_role}}
-              - name: {{node_name}}
-              - rack: {{node_rack}}
-              - bmc_mac: {{port1_mac_safe}}
+        stx:
+          node:
+            - role: {{node_role}}
+            - name: {{node_name}}
+            - rack: {{node_rack}}
+            - bmc_mac: {{port1_mac_safe}}
 
 
 # /etc/salt/minion_id:

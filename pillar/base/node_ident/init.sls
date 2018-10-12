@@ -37,7 +37,7 @@ node:
     - mgmt_port2: '00:50:cc:79:bd:f8'
     - ipmi_port:  '00:50:cc:79:bd:f9'
     - data_port1: '00:50:cc:79:bd:fb'
-    - data_port2: '00:50:cc:79:bd:fb'
+    - data_port2: '00:50:cc:79:bd:fc'
     - data0:      '172.19.12.1'
     - mgmt0:      '172.16.12.1'
     - ipmi:       '172.16.12.101'
@@ -151,3 +151,13 @@ node:
     - role: s3_client
     - mgmt0: '00:1e:67:68:c8:ac'
     - data0: 'e4:1d:2d:6f:8a:b2'
+
+  00_50_cc_79_92_d3:
+    - rack: m02
+    - hostname: edxCloud1-1
+    - role: edge
+
+  00_50_cc_79_93_15:
+    - rack: m02
+    - hostname: edxedge1-1
+    - role: edge

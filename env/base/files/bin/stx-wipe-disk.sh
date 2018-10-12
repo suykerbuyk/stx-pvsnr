@@ -2,21 +2,25 @@
 
 set -e
 partprobe
-[ -f /root/provisioning.done ] || rm -f /root/provisioning.done
+ls
+[ -f /root/provisioning.done ] && rm -f /root/provisioning.done
 
-[ 0 == $(mountpoint -q '/part1/var') ] || umount /part1/var
-[ 0 == $(mountpoint -q '/part1') ] || umount /part1
+[ $(mountpoint -q '/part1/var' &>/dev/null) ] \
+	&& logexec 'umount /part1/var'
+[ $(mountpoint -q '/part1'     &> /dev/null) ] \
+	&& logexec 'umount /part1'
 
+# Destroy Volume groups
 for grp in "$(vgs --noheadings --all --unbuffered -o vg_name)"; do
 	grp=${grp//[[:blank:]]/}
 	if [ "${grp}x" != "x" ]; then
 		echo "___${grp}___"
-		vgchange -a n "${grp}"
-		vgremove -y "${grp}"
+		vgchange -a n ${grp}
+		vgremove -y ${grp}
 	fi
 done
 
-# Destroy Raid file systems (should destroy LVM groups first!)
+# Destroy Raid file systems
 if [ -d /dev/md/ ]; then
 	for dev in $(find /dev/md*p? -type b); do
 		wipefs -fa ${dev}
@@ -31,7 +35,7 @@ for raid in $(find /dev/ -type b -name "md*" | grep -v 'p'); do
 	mdadm --stop ${raid}
 done
 for disk in ${RAID_MEMBERS}; do
-	mdadm --zero-superblock "${disk}"
+	mdadm --zero-superblock ${disk}
 done
 
 for disk in $(blkid | grep sd | grep 'LABEL'  | awk -F ':' '{print $1}' ); do

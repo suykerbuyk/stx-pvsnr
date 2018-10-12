@@ -3,6 +3,23 @@ roster_defaults:
   passwd: Xyratex
   priv: /root/.ssh/id_rsa
   tty: True
+10.230.165.191:
+  user: root
+  host: 10.230.165.191
+  passwd: Xyratex
+  #mero06 cmu
+
+10.230.165.183:
+  user: root
+  host: 10.230.165.183
+  passwd: Xyratex
+  #cloudssu-1-1
+
+10.230.165.200:
+  user: root
+  host: 10.230.165.200
+  passwd: Xyratex
+  #cloudssu-1-1
 
 cmu-h2:
   user: root
