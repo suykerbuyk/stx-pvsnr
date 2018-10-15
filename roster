@@ -3,6 +3,7 @@ roster_defaults:
   passwd: Xyratex
   priv: /root/.ssh/id_rsa
   tty: True
+
 10.230.165.191:
   user: root
   host: 10.230.165.191

@@ -161,3 +161,9 @@ node:
     - rack: m02
     - hostname: edxedge1-1
     - role: edge
+
+# mero06 SSUs
+  00_50_cc_7a_6a_df:
+    - rack: m09
+    - hostname: ssu1-m09
+    - role: generic

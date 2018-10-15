@@ -9,7 +9,7 @@ def by_device():
     CLI Example:
 
     .. code block:: bash
-    salt '*' stx-disk.by_device
+    salt '*' stx_disk.by_device
     '''
     block_device_list={}
     block_path = '/sys/class/block/'
@@ -40,7 +40,7 @@ def by_model():
     CLI Example:
 
     .. code block:: bash
-    salt '*' stx-disk.by_model
+    salt '*' stx_disk.by_model
     '''
     models = defaultdict(list)
     for dev,value in by_device().iteritems():
@@ -54,7 +54,7 @@ def by_vendor():
     CLI Example:
 
     .. code block:: bash
-    salt '*' stx-disk.by_vendor
+    salt '*' stx_disk.by_vendor
     '''
     vendors = defaultdict(list)
     for dev,value in by_device().iteritems():
@@ -68,7 +68,7 @@ def by_size():
     CLI Example:
 
     .. code block:: bash
-    salt '*' stx-disk.by_vendor
+    salt '*' stx_disk.by_vendor
     '''
     vendors = defaultdict(list)
     for dev,value in by_device().iteritems():
@@ -81,8 +81,8 @@ def by_criteria(min_gb = 0, max_gb=-1, model_substr=str(""), vendor_substr=str("
     CLI Example:
 
     ... code block:: bash
-    salt '*' stx-disk.by_criteria (100, 150, '', 'Sandisk')
-    salt '10*' saltutil.sync_all && salt '10*' stx-disk.by_criteria 100 '150' "SanDisk" "ATA"
+    salt '*' stx_disk.by_criteria (100, 150, '', 'Sandisk')
+    salt '10*' saltutil.sync_all && salt '10*' stx_disk.by_criteria 100 '150' "SanDisk" "ATA"
     '''
     matching = []
     rejected = []

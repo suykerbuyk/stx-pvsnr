@@ -540,7 +540,7 @@
 
 # salt-ssh has the ability to update the flat roster file if a minion is not
 # found in the roster.  Set this to True to enable it.
-#ssh_update_roster: False
+ssh_update_roster: True
 
 #####    Master Module Management    #####
 ##########################################
