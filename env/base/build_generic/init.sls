@@ -54,7 +54,7 @@ update_packages:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
 /part1/etc/salt/minion:
   file.managed:
@@ -77,7 +77,7 @@ update_packages:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
 /part1/etc/sysconfig/:
   file.recurse:
