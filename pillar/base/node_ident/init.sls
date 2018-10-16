@@ -7,17 +7,6 @@ node:
   # #############
   # Hermi 01 rack
   00_50_cc_7a_80_e1:
-    - hostname: cmu-h1
-    - role: cmu
-
-  00_50_cc_79_b2_53:
-    - hostname: ssu2-h1
-    - role: ssu
-
-
-  # #############
-  # Hermi 01 rack
-  00_1e_67_68_df_7e:
     - rack: h01
     - role: cmu
     - hostname: cmu-h01

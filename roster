@@ -22,7 +22,7 @@ roster_defaults:
   passwd: Xyratex
   #cloudssu-1-1
 
-cmu-h2:
+cmu-h02:
   user: root
   host: 10.230.166.52
   passwd: Xyratex
