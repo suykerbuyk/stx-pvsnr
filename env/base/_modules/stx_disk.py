@@ -25,7 +25,7 @@ def by_device():
             f = open(block_path + disk + '/size', "r")
             size = f.read().strip(' \t\n\r')
             f.close
-            print block_path
+#            print block_path
             block_device_list[disk] = {
                 'model': model,
                 'vendor': vendor,
@@ -84,38 +84,43 @@ def by_criteria(min_gb = 0, max_gb=-1, model_substr=str(""), vendor_substr=str("
     salt '*' stx_disk.by_criteria (100, 150, '', 'Sandisk')
     salt '10*' saltutil.sync_all && salt '10*' stx_disk.by_criteria 100 '150' "SanDisk" "ATA"
     '''
+    min_gb = int(min_gb)
+    max_gb = int(max_gb)
     matching = []
     rejected = []
+    print 'min=', min_gb
+    print 'max=', max_gb 
     for dev,value in by_device().iteritems():
         match = False;
         this_size = value['size']
         this_model = str(value['model'])
         this_vendor = str(value['vendor'])
-        print "this model :",this_model
-        print "this vendor:",this_vendor
-        print "this size  :",this_size
-        print "this dev   :", dev
+#        print "this model :",this_model
+#        print "this vendor:",this_vendor
+#        print "this size  :",this_size
+#        print "this dev   :", dev
         if max_gb > -1 and this_size > max_gb:
-            print "Skipping due to max size"
+#            print "Skipping due to max size"
             rejected.append(dev)
             continue
         if this_size < min_gb:
-            print "Skipping due to min size"
+#            print "Skipping due to min size:", dev
             rejected.append(dev)
             continue
         if len(model_substr) > 0:
-            print "Checking model string match"
+#            print "Checking model string match"
             if 0 > this_model.find(model_substr):
-                print "Skipping due to model", model_substr, 'not found in', this_model
+                print "Skipping due to model", model_substr, 'not found in', this_model, ' device:', dev
                 rejected.append(dev)
                 continue
         if len(vendor_substr) > 0:
-            print "Checking Vendor string match"
+#            print "Checking Vendor string match"
             if 0 > this_vendor.find(vendor_substr):
-                print "Skipping due to vendor", vendor_substr, 'not found in ', this_vendor
+#                print "Skipping due to vendor", vendor_substr, 'not found in ', this_vendor, ' device:', dev
                 rejected.append(dev)
                 continue
-        print "Appending", dev
+#        print "Appending", dev
         matching.append(dev)
+#        print 'matching:', dev
     ret={"matching": matching, "rejected": rejected}
     return ret

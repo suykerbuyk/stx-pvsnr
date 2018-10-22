@@ -1,18 +1,35 @@
-include:
-    - live_minion
+{% set stx_node_rack = salt['grains.get']('stx:node:rack') %}
+{% set stx_image_src = salt['pillar.get']('stx_bci:ssu:image') %}
+{% set stx_boot_disks = salt['stx_disk.by_criteria']('20', '150') %}
+{% set stx_var_disks  = salt['stx_disk.by_criteria']('300', '7000') %}
+{% set mnt_point1 = '/target_root' %}
 
-image_disk:
-    cmd.run:
-    - name: /bin/stx-imager-ssu.sh /dev/sda http://stx-prvsnr/sage/images/sage-CentOS-7.5.x86_64-7.5.0_3-k3.10.0.txz
+{% if salt['grains.get']('stx_live_image') %}
+
+include:
+  - live_minion
+
+wipe_disk:
+  cmd.run:
+    - name: /bin/stx-wipe-disk.sh
     - shell: /bin/bash
     - require:
-        - sls: live_minion
+      - sls: live_minion
     - unless:
-        - File.access /root/provisioning.done f 
+      - File.access /root/provisioning.done f 
 
-sync_etc_yum.repos.d:
-    file.recurse:
-    - name: /part1/etc/yum.repos.d
+image_boot_disk:
+  cmd.run:
+    - name: /bin/stx-imager-ssu.sh /dev/{{stx_boot_disks["matching"][0]}} {{mnt_point1}} {{stx_image_src}} 
+    - shell: /bin/bash
+    - require:
+      - wipe_disk
+    - unless:
+      - File.access /root/provisioning.done f 
+
+configure_repositories:
+  file.recurse:
+    - name: {{mnt_point1}}/etc/yum.repos.d
     - source: salt://files/etc/yum.repos.d
     - clean: True
     - keep_source: False
@@ -21,25 +38,31 @@ sync_etc_yum.repos.d:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - image_disk
+      - image_boot_disk
 
 import_rpm_keys:
-    cmd.run:
-    - name: rpm --import --root /part1/ http://stx-prvsnr/vendor/centos/7.5.1804/RPM-GPG-KEY-CentOS-7
+  cmd.run:
+    - name: rpm --import --root {{mnt_point1}}/ http://stx-prvsnr/vendor/centos/7.5.1804/RPM-GPG-KEY-CentOS-7
     - require:
-        - sync_etc_yum.repos.d
+      - configure_repositories
     - unless:
-        - test -f /part1/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+      - test -f {{mnt_point1}}/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 update_packages:
-    cmd.run:
-    - name: /bin/yum install -y --installroot=/part1/ salt-minion 
+  cmd.run:
+    - name: /bin/yum install -y --installroot={{mnt_point1}}/ tmux salt-minion 
     - require:
-        - import_rpm_keys
+      - import_rpm_keys
 
-sync_etc_salt:
-    file.recurse:
-    - name: /part1/etc/salt
+purge_packages:
+  cmd.run:
+    - name: /bin/yum erase -y --installroot={{mnt_point1}}/ NetworkManager ; true
+    - require:
+      - update_packages
+
+set_salt_dir_files:
+  file.recurse:
+    - name: {{mnt_point1}}/etc/salt
     - source: salt://build_ssu/files/etc/salt
     - clean: True
     - keep_source: False
@@ -48,11 +71,35 @@ sync_etc_salt:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
-sync_bin:
-    file.recurse:
-    - name: /part1/bin
+set_minion_file:
+  file.managed:
+    - name: {{mnt_point1}}/etc/salt/minion
+    - source: /etc/salt/minion
+    - mode: 0644
+    - require:
+      - update_packages
+
+set_minion_id:
+  file.managed:
+    - name: {{mnt_point1}}/etc/salt/minion_id
+    - mode: 0644
+    - source: /etc/salt/minion_id
+    - require:
+      - update_packages
+
+set_minion_grain_file:
+  file.managed:
+    - name: {{mnt_point1}}/etc/salt/grains
+    - mode: 0644
+    - source: /etc/salt/grains
+    - require:
+      - update_packages
+
+set_bin_files:
+  file.recurse:
+    - name: {{mnt_point1}}/bin
     - source: salt://build_ssu/files/bin
     - keep_source: False
     - dir_mode: 0755
@@ -60,11 +107,11 @@ sync_bin:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
-sync_network_ifcfg:
-    file.recurse:
-    - name: /part1/etc/sysconfig/network-scripts
+set_network_script_files:
+  file.recurse:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts
     - source: salt://build_ssu/files/etc/sysconfig/network-scripts
     - keep_source: False
     - dir_mode: 0644
@@ -73,11 +120,11 @@ sync_network_ifcfg:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
-sync_root_ssh:
-    file.recurse:
-    - name: /part1/root/.ssh
+set_root_ssh_dir_files:
+  file.recurse:
+    - name: {{mnt_point1}}/root/.ssh
     - source: salt://build_ssu/files/root/ssh
     - keep_source: False
     - dir_mode: 0700
@@ -88,11 +135,11 @@ sync_root_ssh:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
-sync_etc_ssh:
-    file.recurse:
-    - name: /part1/etc/ssh
+set_etc_ssh_dir_files:
+  file.recurse:
+    - name: {{mnt_point1}}/etc/ssh/
     - source: salt://build_ssu/files/etc/ssh
     - keep_source: False
     - dir_mode: 0755
@@ -105,58 +152,42 @@ sync_etc_ssh:
     - require:
         - update_packages
 
-set_hostname:
-    file.managed:
-    - name: /part1/etc/hostname
+{{mnt_point1}}/etc/hostname:
+  file.managed:
     - mode: 0644
-    - contents: ssu7-h1
-
-set_bonding_max:
-    file.managed:
-    - name: /part1/etc/modprobe.d/bonding.conf
-    - mode: 0644
-    - contents: options bonding max_bonds=0
-
-set_minion_id:
-    file.managed:
-    - name: /part1/etc/salt/minion_id
-    - mode: 0644
-    - contents:
-        ssu7-h1
-    - require:
-        - update_packages
+    - source: /etc/hostname
 
 /dev/md0:
-    raid.present:
+  raid.present:
     - level: 1
     - devices:
-        - /dev/sdq
-        - /dev/sdbt
+      - /dev/{{stx_var_disks['matching'][0]}}
+      - /dev/{{stx_var_disks['matching'][1]}}
     - chunk: 256
     - run: True
     - unless:
         - ls /dev/ | grep md0
 
 update_mdadm_conf:
-    cmd.run:
-    - name: 'mdadm --detail --scan /dev/md0 >/part1/etc/mdadm.conf'
+  cmd.run:
+    - name: 'mdadm --detail --scan /dev/md0 >{{mnt_point1}}/etc/mdadm.conf'
     - shell: /bin/bash
     - python_script: True
     - require:
-        - /dev/md0
+      - /dev/md0
 
 label_raid_disk:
-    module.run:
+  module.run:
     - name: partition.mklabel
     - device: /dev/md0
     - label_type: gpt
     - require:
-        - /dev/md0
+      - /dev/md0
     - unless:
-        - fdisk -l /dev/md0 | grep 'Disk label type: dos'
+      - fdisk -l /dev/md0 | grep 'Disk label type: gpt'
 
 make_swap_part:
-    module.run:
+  module.run:
     - name: partition.mkpartfs
     - device: /dev/md0
     - part_type: primary
@@ -164,27 +195,26 @@ make_swap_part:
     - start: 0GB
     - end: 50%
     - require:
-        - label_raid_disk
+      - label_raid_disk
     - unless:
-        - file.is_blkdev /dev/md0p1
-
+      - file.is_blkdev /dev/md0p1
 
 make-swap-fs:
-    cmd.run:
+  cmd.run:
     - name: 'mkswap -U d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 -L swap /dev/md0p1'
     - require:
-        - make_swap_part
+      - make_swap_part
     - unless:
-        - disk.blkid /dev/md0p1 | grep swap
+      - disk.blkid /dev/md0p1 | grep swap
 
 make_swap_fstab:
-    file.append:
-    - name: /part1/etc/fstab
+  file.append:
+    - name: {{mnt_point1}}/etc/fstab
     - text:
-        - UUID=d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 none swap sw 0 0
+      - UUID=d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 none swap sw 0 0
 
 make_opt_part:
-    module.run:
+  module.run:
     - name: partition.mkpartfs
     - device: /dev/md0
     - part_type: primary
@@ -192,36 +222,43 @@ make_opt_part:
     - start: 50%
     - end: 100%
     - require:
-        - label_raid_disk
-        - make-swap-fs
+      - label_raid_disk
+      - make-swap-fs
     - unless:
-        - file.is_blkdev /dev/md0p2
+      - file.is_blkdev /dev/md0p2
 
 make_opt_fs:
-    cmd.run:
+  cmd.run:
     - name: 'mkfs.ext4 -U 8974698e-07c0-4e84-af44-55fc3d77fce8 -L opt /dev/md0p2'
     - require:
-        - make_opt_part
+      - make_opt_part
     - unless:
-        - disk.blkid /dev/md0p2 | grep ext
+      - disk.blkid /dev/md0p2 | grep ext
 
 make-opt-mntpoint:
-    cmd.run:
-    - name: '[ -d /part1/var/mero ] || mkdir -p /part1/var/mero'
+  cmd.run:
+    - name: '[ -d {{mnt_point1}}/var/mero ] || mkdir -p {{mnt_point1}}/var/mero'
 
 make_opt_fstab:
-    file.append:
-    - name: /part1/etc/fstab
+  file.append:
+    - name: {{mnt_point1}}/etc/fstab
     - text:
-        - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /var/mero ext4 defaults 1 1
+      - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /var/mero ext4 defaults 1 1
 
 salt_minion_enable_service:
-    cmd.run:
-    - name: systemctl --root=/part1 enable salt-minion
+  cmd.run:
+    - name: systemctl --root={{mnt_point1}} enable salt-minion
     - unless:
-        - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f
+      - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f
 
 salt_disable_firewalld:
     cmd.run:
-    - name: systemctl --root=/part1 disable firewalld
+    - name: systemctl --root={{mnt_point1}} disable firewalld
     - unless:
+
+{{mnt_point1}}/etc/modprobe.d/bonding.conf:
+  file.managed:
+    - mode: 0644
+    - contents: options bonding max_bonds=0
+
+{% endif %} # if stx_live_minion

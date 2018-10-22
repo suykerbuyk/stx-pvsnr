@@ -72,3 +72,6 @@ def present():
 if __name__ == "__main__":
 	print port_files()
 	print pci_slots()
+	set_eth_mode
+	gen_rdma_conf_as_eth
+

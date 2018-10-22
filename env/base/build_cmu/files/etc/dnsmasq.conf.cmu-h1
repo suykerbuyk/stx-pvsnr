@@ -1,0 +1,36 @@
+# DNS Options
+#port=0
+#except-interface=eth0, eth1
+interface=bond0.2
+# DHCP Options
+dhcp-range=172.16.1.0,172.16.1.200,1h
+#dhcp-range=172.19.1.0,172.19.1.200,1h
+dhcp-option=vendor:PXEClient,6,2b
+dhcp-no-override
+dhcp-hostsfile=/etc/hosts.dnsmasq
+resolv-file=/etc/dnsmasq.resolv.conf
+#domain=hermi1.dco.colo.seagate.com
+dhcp-leasefile=/etc/dnsmasq.lease
+#listen-address=10.230.164.179
+
+# Set Default Gateway
+#dhcp-option=3,172.16.0.41
+pxe-service=X86PC, "Boot from network", pxelinux
+
+# Lock to the interfaces specified and no others!
+#bind-interfaces
+bind-dynamic
+
+# TFTP Options
+enable-tftp
+tftp-root=/prvsnr/stx-net-boot/tftpboot/
+# Logging Options - log it all!
+log-queries
+log-dhcp
+
+user=root
+group=root
+log-facility=/var/log/dnsmasq.log
+
+#Add forced wildcard domain response here
+address=/s3.h1.mero.colo.seagate.com/172.19.1.100

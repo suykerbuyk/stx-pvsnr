@@ -4,7 +4,7 @@ function usage() {
 	if [ $# != 0 ] ; then
 		echo "Error: $1"
 	fi
-	echo "Usage: $SCRIPT /dev/disk_device http://source/image/file.txz"
+	echo "Usage: $SCRIPT /dev/disk_device mnt_dir http://source/image/file.txz"
 	exit 1
 }
 
@@ -13,16 +13,17 @@ function showdone() {
 	exit 0
 }
 
-if [ $# != 2 ] ; then
-	usage "wrong number of parameters (expected 2)."
+if [ $# != 3 ] ; then
+	usage "wrong number of parameters (expected 3)."
 fi
 SCRIPT="$(basename $0)"
 DSK="${1}"
-URL="${2}"
+MNT1="${2}"
+# MNT1="/part1"
+MNT2="${MNT1}_part2"
+URL="${3}"
 FILE=$(basename "${URL}")
 EXT="${FILE##*.}"
-MNT1="/part1"
-MNT2="/part2"
 DONE_MARKER=/root/provisioning.done
 
 #exit if we are in a imaging done state

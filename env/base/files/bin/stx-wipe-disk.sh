@@ -5,10 +5,8 @@ partprobe
 ls
 [ -f /root/provisioning.done ] && rm -f /root/provisioning.done
 
-[ $(mountpoint -q '/part1/var' &>/dev/null) ] \
-	&& logexec 'umount /part1/var'
-[ $(mountpoint -q '/part1'     &> /dev/null) ] \
-	&& logexec 'umount /part1'
+[ $(mountpoint -q '/part1/var' &>/dev/null) ] && umount /part1/var
+[ $(mountpoint -q '/part1'     &> /dev/null) ] && umount /part1
 
 # Destroy Volume groups
 for grp in "$(vgs --noheadings --all --unbuffered -o vg_name)"; do
