@@ -25,12 +25,12 @@ def get_bmc_macs():
 	returns a list of bmc ipv4 and mac addresses
 
 	CLI:
-	salt '*' grains.get bmc_network
-	salt '*' grains.get bmc_network:port1_mac
-	salt '*' grains.get bmc_network:port1_ipv4
-	
+	salt '*' grains.get stx:bmc
+	salt '*' grains.get stx:bmc:port1_mac
+	salt '*' grains.get stx:bmc:port1_ipv4
+
 	A self test can be run by calling the script from a console:
-		python ./bmc_network_names.py
+		python ./stx:bmc_names.py
 	'''
 
 	ret = {'bmc_network': []}
@@ -47,19 +47,23 @@ def get_bmc_macs():
 			return ret
 		for line in ipmi_ret['stdout'].splitlines():
 			if line.startswith('MAC Address'):
-				mac = line.split()[3]
-				mac_safe = mac.replace(':','_')
-				grain_name='port' + str(ipmi_port) + '_mac'
-				grain_safe=grain_name + '_safe'
-				ret['bmc_network'].append({grain_name: mac})
-				ret['bmc_network'].append({grain_safe: mac_safe})
+				mac_std  = line.split()[3]
+				mac_safe = mac_std.replace(':','_')
+				mac_pxe  ='01-' + mac_std.replace(':','-')
+				base_name = 'port' + str(ipmi_port) + '_mac'
+				grain_name_std = base_name
+				grain_name_safe= base_name + '_safe'
+				grain_name_pxe = base_name + '_pxe'
+				ret['bmc_network'].append({grain_name_std:  mac_std})
+				ret['bmc_network'].append({grain_name_safe: mac_safe})
+				ret['bmc_network'].append({grain_name_pxe:  mac_pxe})
 			elif line.startswith('IP Address       '):
-				ipv4 = line.split()[3]
-				ipv4_safe = ipv4.replace('.','_')
-				grain_name='port' + str(ipmi_port) + '_ipv4'
-				grain_safe=grain_name + '_safe'
-				ret['bmc_network'].append({grain_name: ipv4})
-				ret['bmc_network'].append({grain_safe: ipv4_safe})
+				ipv4_std = line.split()[3]
+				ipv4_safe = ipv4_std.replace('.','_')
+				grain_name_std='port' + str(ipmi_port) + '_ipv4'
+				grain_name_safe=grain_name_std + '_safe'
+				ret['bmc_network'].append({grain_name_std: ipv4_std})
+				ret['bmc_network'].append({grain_name_safe: ipv4_safe})
 	return ret
 
 if __name__ == "__main__":
