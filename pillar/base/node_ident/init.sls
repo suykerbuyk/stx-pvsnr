@@ -216,6 +216,39 @@ node:
     - mgmt0:      '172.16.12.8'
     - ipmi:       '172.16.12.128'
 
+  00_1e_67_68_e1_0e:
+    - rack: h02
+    - role: s3_server
+    - hostname: qb01n2-h02
+    - mgmt_port1: '00:1e:67:68:e1:0c'
+    - mgmt_port2: '00:1e:67:68:e1:0d'
+    - data_port1: '00:1e:67:68:cd:15'
+    - data0:      '172.19.12.9'
+    - mgmt0:      '172.16.12.9'
+    - ipmi:       '172.16.12.129'
+
+  00_1e_67_68_d7_7e:
+    - rack: h02
+    - role: s3_server
+    - hostname: qb01n3-h02
+    - mgmt_port1: '00:1e:67:68:d7:7c'
+    - mgmt_port2: '00:1e:67:68:d7:7d'
+    - data_port1: '00:1e:67:68:d7:81'
+    - data0:      '172.19.12.10'
+    - mgmt0:      '172.16.12.10'
+    - ipmi:       '172.16.12.130'
+
+  00_1e_67_68_dc_56:
+    - rack: h02
+    - role: s3_server
+    - hostname: qb01n4-h02
+    - mgmt_port1: '00:1e:67:68:dc:54'
+    - mgmt_port2: '00:1e:67:68:dc:55'
+    - data_port1: '00:1e:67:68:dc:59'
+    - data0:      '172.19.12.11'
+    - mgmt0:      '172.16.12.11'
+    - ipmi:       '172.16.12.131'
+
 
   # mero06 clients
   00_1e_67_68_cc_0e:
