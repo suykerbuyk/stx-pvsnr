@@ -20,12 +20,12 @@ wipe_disk:
 
 image_boot_disk:
   cmd.run:
-    - name: /bin/stx-imager-ssu.sh /dev/{{stx_boot_disks["matching"][0]}} {{mnt_point1}} {{stx_image_src}} 
+    - name: /bin/stx-imager-ssu.sh /dev/{{stx_boot_disks["matching"][0]}} {{mnt_point1}} {{stx_image_src}}
     - shell: /bin/bash
     - require:
       - wipe_disk
     - unless:
-      - file.access /root/provisioning.done f 
+      - file.access /root/provisioning.done f
 
 configure_repositories:
   file.recurse:
@@ -152,7 +152,7 @@ set_etc_ssh_dir_files:
     - require:
       - update_packages
 
-set_etc_host_name
+set_etc_host_name:
   file.managed:
     - name: {{mnt_point1}}/etc/hostname
     - source: /etc/hostname
@@ -251,14 +251,15 @@ salt_minion_enable_service:
   cmd.run:
     - name: systemctl --root={{mnt_point1}} enable salt-minion
     - unless:
-      - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f
+      - file.access {{mnt_point1}}/etc/systemd/system/multi-user.target.wants/salt-minion.service f
 
 salt_disable_firewalld:
     cmd.run:
     - name: systemctl --root={{mnt_point1}} disable firewalld
 
-{{mnt_point1}}/etc/modprobe.d/bonding.conf:
+set_bonding_config:
   file.managed:
+    - name: {{mnt_point1}}/etc/modprobe.d/bonding.conf
     - mode: 0644
     - contents: options bonding max_bonds=0
 

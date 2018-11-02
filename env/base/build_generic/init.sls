@@ -63,7 +63,7 @@ purge_packages:
 set_salt_dir_files:
   file.recurse:
     - name: {{mnt_point1}}/etc/salt
-    - source: salt://build_ssu/files/etc/salt
+    - source: salt://build_generic/files/etc/salt
     - clean: True
     - keep_source: False
     - dir_mode: 0755
@@ -72,7 +72,6 @@ set_salt_dir_files:
     - include_empty: True
     - require:
       - update_packages
-
 
 set_minion_file:
   file.managed:
@@ -126,7 +125,7 @@ set_network_script_files:
 set_root_ssh_dir_files:
   file.recurse:
     - name: {{mnt_point1}}/root/.ssh
-    - source: salt://build_ssu/files/root/ssh
+    - source: salt://build_generic/files/root/ssh
     - keep_source: False
     - dir_mode: 0700
     - file_mode: 0600
@@ -141,7 +140,7 @@ set_root_ssh_dir_files:
 set_etc_ssh_dir_files:
   file.recurse:
     - name: {{mnt_point1}}/etc/ssh/
-    - source: salt://build_ssu/files/etc/ssh
+    - source: salt://build_generic/files/etc/ssh
     - keep_source: False
     - dir_mode: 0755
     - file_mode: keep
@@ -164,6 +163,7 @@ salt_minion_enable_service:
   cmd.run:
     - name: systemctl --root={{mnt_point1}} enable salt-minion
     - unless:
+      - file.access {{mnt_point1}}/etc/systemd/system/multi-user.target.wants/salt-minion.service f
       - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f
 
 set_bonding_config:

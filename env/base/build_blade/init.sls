@@ -1,5 +1,5 @@
 {% set stx_node_rack = salt['grains.get']('stx:node:rack') %}
-{% set stx_image_src = salt['pillar.get']('stx_bci:ssu:image') %}
+{% set stx_image_src = salt['pillar.get']('stx_bci:blade:image') %}
 {% set stx_boot_disks = salt['stx_disk.by_criteria']('20', '150') %}
 {% set stx_var_disks  = salt['stx_disk.by_criteria']('300', '7000') %}
 {% set mnt_point1 = '/target_root' %}
@@ -16,16 +16,16 @@ wipe_disk:
     - require:
       - sls: live_minion
     - unless:
-      - file.access /root/provisioning.done f 
+      - file.access /root/provisioning.done f
 
 image_boot_disk:
   cmd.run:
-    - name: /bin/stx-imager-blade.sh /dev/{{stx_boot_disks["matching"][0]}} {{mnt_point1}} {{stx_image_src}} 
+    - name: /bin/stx-imager-blade.sh /dev/{{stx_boot_disks["matching"][0]}} {{mnt_point1}} {{stx_image_src}}
     - shell: /bin/bash
     - require:
       - wipe_disk
     - unless:
-      - file.access /root/provisioning.done f 
+      - file.access /root/provisioning.done f
 
 configure_repositories:
   file.recurse:
@@ -152,25 +152,27 @@ set_etc_ssh_dir_files:
     - require:
       - update_packages
 
-{{mnt_point1}}/etc/hostname:
+set_etc_host_name:
   file.managed:
-    - mode: 0644
+    - name: {{mnt_point1}}/etc/hostname
     - source: /etc/hostname
-
-/dev/md0:
-  raid.present:
-    - level: 1
-    - devices:
-      - /dev/{{stx_var_disks['matching'][0]}}
-      - /dev/{{stx_var_disks['matching'][1]}}
-    - chunk: 256
-    - run: True
-    - unless:
-        - ls /dev/ | grep md0
+    - user: root
+    - group: root
 
 salt_minion_enable_service:
   cmd.run:
     - name: systemctl --root={{mnt_point1}} enable salt-minion
     - unless:
       - file.access {{mnt_point1}}/etc/systemd/system/multi-user.target.wants/salt-minion.service f
-      - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f
+
+salt_disable_firewalld:
+    cmd.run:
+    - name: systemctl --root={{mnt_point1}} disable firewalld
+
+set_bonding_config:
+  file.managed:
+    - name: {{mnt_point1}}/etc/modprobe.d/bonding.conf
+    - mode: 0644
+    - contents: options bonding max_bonds=0
+
+{% endif %} # if stx_live_minion
