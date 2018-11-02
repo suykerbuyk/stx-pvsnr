@@ -2,6 +2,7 @@ DEVICE=mgmt0
 UUID=9fd6e573-ec5a-4a59-914b-a4cd1342916c
 BOOTPROTO=dhcp
 ONBOOT=yes
+DEFROUT=yes
 TYPE=Bond
 BONDING_MASTER=yes
 BONDING_OPTS="mode=active-backup primary=eth0 miimon=100"

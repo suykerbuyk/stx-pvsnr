@@ -2,6 +2,7 @@ DEVICE=data0
 UUID=4911a342-12c3-4346-a346-e529df60c72d
 BOOTPROTO=dhcp
 ONBOOT=yes
+DEFROUT=no
 TYPE=Bond
 BONDING_MASTER=yes
 BONDING_OPTS="mode=4 miimon=100 lacp_rate=1 xmit_hash_policy=layer3+4"
