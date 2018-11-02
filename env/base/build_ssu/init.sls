@@ -16,7 +16,7 @@ wipe_disk:
     - require:
       - sls: live_minion
     - unless:
-      - File.access /root/provisioning.done f 
+      - file.access /root/provisioning.done f
 
 image_boot_disk:
   cmd.run:
@@ -25,7 +25,7 @@ image_boot_disk:
     - require:
       - wipe_disk
     - unless:
-      - File.access /root/provisioning.done f 
+      - file.access /root/provisioning.done f 
 
 configure_repositories:
   file.recurse:
@@ -50,7 +50,7 @@ import_rpm_keys:
 
 update_packages:
   cmd.run:
-    - name: /bin/yum install -y --installroot={{mnt_point1}}/ tmux salt-minion 
+    - name: /bin/yum install -y --installroot={{mnt_point1}}/ tmux salt-minion
     - require:
       - import_rpm_keys
 
@@ -150,12 +150,14 @@ set_etc_ssh_dir_files:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
-{{mnt_point1}}/etc/hostname:
+set_etc_host_name
   file.managed:
-    - mode: 0644
+    - name: {{mnt_point1}}/etc/hostname
     - source: /etc/hostname
+    - user: root
+    - group: root
 
 /dev/md0:
   raid.present:
@@ -254,7 +256,6 @@ salt_minion_enable_service:
 salt_disable_firewalld:
     cmd.run:
     - name: systemctl --root={{mnt_point1}} disable firewalld
-    - unless:
 
 {{mnt_point1}}/etc/modprobe.d/bonding.conf:
   file.managed:

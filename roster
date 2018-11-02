@@ -132,3 +132,7 @@ qb03n4-m06:
   host: qb03n4-m06
   passwd: Xyratex
 
+udxedge1-2:
+  user: root
+  host: 10.230.163.89
+  passwd: Xyratex
