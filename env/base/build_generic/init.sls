@@ -122,6 +122,22 @@ set_network_script_files:
     - require:
       - update_packages
 
+set_network_file:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network
+    - source: salt://build_blade/files/etc/sysconfig/network
+    - dir_mode: 0644
+    - file_mode: 0644
+    - clean: False
+    - keep_symlinks: False
+    - include_empty: True
+    - require:
+      - update_packages
+
+rm_ifcfg_lan0:
+  file.absent:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-lan0
+
 set_root_ssh_dir_files:
   file.recurse:
     - name: {{mnt_point1}}/root/.ssh
@@ -164,7 +180,10 @@ salt_minion_enable_service:
     - name: systemctl --root={{mnt_point1}} enable salt-minion
     - unless:
       - file.access {{mnt_point1}}/etc/systemd/system/multi-user.target.wants/salt-minion.service f
-      - file.access /etc/systemd/system/multi-user.target.wants/salt-minion.service f
+
+salt_disable_firewalld:
+    cmd.run:
+    - name: systemctl --root={{mnt_point1}} disable firewalld
 
 set_bonding_config:
   file.managed:

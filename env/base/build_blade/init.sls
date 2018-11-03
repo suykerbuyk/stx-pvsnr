@@ -1,7 +1,7 @@
 {% set stx_node_rack = salt['grains.get']('stx:node:rack') %}
 {% set stx_image_src = salt['pillar.get']('stx_bci:blade:image') %}
-{% set stx_boot_disks = salt['stx_disk.by_criteria']('20', '150') %}
-{% set stx_var_disks  = salt['stx_disk.by_criteria']('300', '7000') %}
+{% set stx_boot_disks = salt['stx_disk.by_criteria']('100', '900') %}
+# {% set stx_var_disks  = salt['stx_disk.by_criteria']('300', '7000') %}
 {% set mnt_point1 = '/target_root' %}
 
 {% if salt['grains.get']('stx_live_image') %}
@@ -121,6 +121,22 @@ set_network_script_files:
     - include_empty: True
     - require:
       - update_packages
+
+set_network_file:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network
+    - source: salt://build_blade/files/etc/sysconfig/network
+    - dir_mode: 0644
+    - file_mode: 0644
+    - clean: False
+    - keep_symlinks: False
+    - include_empty: True
+    - require:
+      - update_packages
+
+rm_ifcfg_lan0:
+  file.absent:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-lan0
 
 set_root_ssh_dir_files:
   file.recurse:

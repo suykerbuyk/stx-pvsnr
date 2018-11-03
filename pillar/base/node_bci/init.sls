@@ -10,5 +10,7 @@ stx_bci:
     - image: '{{stx_bci_url}}/{{stx_bci_default_img}}'
   s3_server:
     - image: '{{stx_bci_url}}/{{stx_bci_default_img}}'
+  blade:
+    - image: '{{stx_bci_url}}/{{stx_bci_default_img}}'
   generic:
     - image: '{{stx_bci_url}}/{{stx_bci_default_img}}'
