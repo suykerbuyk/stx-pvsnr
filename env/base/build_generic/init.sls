@@ -1,6 +1,6 @@
 {% set stx_node_rack = salt['grains.get']('stx:node:rack') %}
 {% set stx_image_src = salt['pillar.get']('stx_bci:generic:image') %}
-{% set stx_boot_disks = salt['stx_disk.by_criteria']('20', '150') %}
+{% set stx_boot_disks = salt['stx_disk.by_criteria']('20', '499') %}
 {% set stx_var_disks  = salt['stx_disk.by_criteria']('300', '7000') %}
 {% set mnt_point1 = '/target_root' %}
 

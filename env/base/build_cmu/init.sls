@@ -4,6 +4,8 @@
 {% set stx_var_disks  = salt['stx_disk.by_criteria']('300', '7000') %}
 {% set mnt_point1 = '/target_root' %}
 
+{% if salt['grains.get']('stx_live_image') %}
+
 include:
   - live_minion
 
@@ -14,7 +16,7 @@ wipe_disk:
     - require:
       - sls: live_minion
     - unless:
-      - File.access /root/provisioning.done f 
+      - file.access /root/provisioning.done f
 
 image_boot_disk:
   cmd.run:
@@ -23,10 +25,11 @@ image_boot_disk:
     - require:
       - wipe_disk
     - unless:
-      - File.access /root/provisioning.done f 
+      - file.access /root/provisioning.done f
 
-{{mnt_point1}}/etc/yum.repos.d:
+configure_repositories:
   file.recurse:
+    - name: {{mnt_point1}}/etc/yum.repos.d
     - source: salt://files/etc/yum.repos.d
     - clean: True
     - keep_source: False
@@ -41,7 +44,7 @@ import_rpm_keys:
   cmd.run:
     - name: rpm --import --root {{mnt_point1}}/ http://stx-prvsnr/vendor/centos/7.5.1804/RPM-GPG-KEY-CentOS-7
     - require:
-      - sync_etc_yum.repos.d
+      - configure_repositories
     - unless:
       - test -f {{mnt_point1}}/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
@@ -57,9 +60,10 @@ purge_packages:
     - require:
       - update_packages
 
-{{mnt_point1}}/etc/salt/:
+set_salt_dir_files:
   file.recurse:
-    - source: salt://build_cmu/files/etc/salt/
+    - name: {{mnt_point1}}/etc/salt
+    - source: salt://build_cmu/files/etc/salt
     - clean: True
     - keep_source: False
     - dir_mode: 0755
@@ -69,30 +73,34 @@ purge_packages:
     - require:
       - update_packages
 
-{{mnt_point1}}/etc/salt/minion:
+set_minion_file:
   file.managed:
+    - name: {{mnt_point1}}/etc/salt/minion
     - source: /etc/salt/minion
     - mode: 0644
     - require:
       - update_packages
 
-{{mnt_point1}}/etc/salt/minion_id:
+set_minion_id:
   file.managed:
+    - name: {{mnt_point1}}/etc/salt/minion_id
     - mode: 0644
     - source: /etc/salt/minion_id
     - require:
       - update_packages
 
-{{mnt_point1}}/etc/salt/grains:
+set_minion_grain_file:
   file.managed:
+    - name: {{mnt_point1}}/etc/salt/grains
     - mode: 0644
     - source: /etc/salt/grains
     - require:
       - update_packages
 
-{{mnt_point1}}/bin/:
+set_bin_files:
   file.recurse:
-    - source: salt://build_cmu/files/bin/
+    - name: {{mnt_point1}}/bin
+    - source: salt://build_cmu/files/bin
     - keep_source: False
     - dir_mode: 0755
     - file_mode: 0755
@@ -101,20 +109,39 @@ purge_packages:
     - require:
       - update_packages
 
-{{mnt_point1}}/etc/sysconfig/:
+set_network_script_files:
   file.recurse:
-    - source: salt://build_cmu/files/etc/sysconfig/
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts
+    - source: salt://build_cmu/files/etc/sysconfig/network-scripts
     - keep_source: False
-    - dir_mode: 0755
-    - file_mode: 0755
+    - dir_mode: 0644
+    - file_mode: 0644
+    - clean: False
     - keep_symlinks: False
     - include_empty: True
     - require:
       - update_packages
 
-{{mnt_point1}}/root/.ssh/:
+set_network_file:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network
+    - source: salt://build_cmu/files/etc/sysconfig/network
+    - dir_mode: 0644
+    - file_mode: 0644
+    - clean: False
+    - keep_symlinks: False
+    - include_empty: True
+    - require:
+      - update_packages
+
+rm_ifcfg_lan0:
+  file.absent:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-lan0
+
+set_root_ssh_dir_files:
   file.recurse:
-    - source: salt://build_cmu/files/root/ssh/
+    - name: {{mnt_point1}}/root/.ssh
+    - source: salt://build_cmu/files/root/ssh
     - keep_source: False
     - dir_mode: 0700
     - file_mode: 0600
@@ -126,9 +153,10 @@ purge_packages:
     - require:
       - update_packages
 
-{{mnt_point1}}/etc/ssh/:
+set_etc_ssh_dir_files:
   file.recurse:
-    - source: salt://build_cmu/files/etc/ssh/
+    - name: {{mnt_point1}}/etc/ssh/
+    - source: salt://build_cmu/files/etc/ssh
     - keep_source: False
     - dir_mode: 0755
     - file_mode: keep
@@ -138,12 +166,14 @@ purge_packages:
     - keep_symlinks: False
     - include_empty: True
     - require:
-        - update_packages
+      - update_packages
 
-{{mnt_point1}}/etc/hostname:
+set_etc_host_name:
   file.managed:
-    - mode: 0644
+    - name: {{mnt_point1}}/etc/hostname
     - source: /etc/hostname
+    - user: root
+    - group: root
 
 /dev/md0:
   raid.present:
@@ -242,15 +272,16 @@ salt_minion_enable_service:
 salt_disable_firewalld:
     cmd.run:
     - name: systemctl --root={{mnt_point1}} disable firewalld
-    - unless:
 
-{{mnt_point1}}/etc/modprobe.d/bonding.conf:
+set_bonding_config:
   file.managed:
+    - name: {{mnt_point1}}/etc/modprobe.d/bonding.conf
     - mode: 0644
     - contents: options bonding max_bonds=0
 
-{{mnt_point1}}/etc/dnsmasq.conf:
+set_dnsmasq_conf:
   file.managed:
+    - name: {{mnt_point1}}/etc/dnsmasq.conf
     - source: salt://build_cmu/files/etc/dnsmasq.conf.{{stx_node_rack}}
     - mode: 0644
     - user: root
@@ -258,8 +289,9 @@ salt_disable_firewalld:
     - require:
         - update_packages
 
-{{mnt_point1}}/etc/sysconfig/darkhttpd:
+set_darkhttpd_config:
   file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/darkhttpd
     - source: salt://build_cmu/files/etc/sysconfig/darkhttpd
     - mode: 0644
     - user: root
@@ -267,8 +299,9 @@ salt_disable_firewalld:
     - require:
         - update_packages
 
-{{mnt_point1}}/etc/hosts:
+set_etc_hosts_file:
   file.managed:
+    - name: {{mnt_point1}}/etc/hosts
     - source: salt://build_cmu/files/etc/hosts.{{stx_node_rack}}
     - mode: 0644
     - user: root
@@ -277,8 +310,9 @@ salt_disable_firewalld:
     - context:
       rack: {{ stx_node_rack }}
 
-{{mnt_point1}}/etc/hosts.dnsmasq:
+set_hosts_dnsmasq_file:
   file.managed:
+    - name: {{mnt_point1}}/etc/hosts.dnsmasq
     - source: salt://build_cmu/files/etc/hosts.dnsmasq.{{stx_node_rack}}
     - mode: 0644
     - user: root
@@ -321,3 +355,4 @@ salt_master_enable_service:
     - unless:
       - file.access /etc/systemd/system/multi-user.target.wants/salt-master.service f
 
+{% endif %} # if stx_live_minion
