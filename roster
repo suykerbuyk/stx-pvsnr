@@ -4,22 +4,10 @@ roster_defaults:
   priv: /root/.ssh/id_rsa
   tty: True
 
-cmu-m06:
+cmu-m09:
   user: root
   host: 10.230.165.191
   passwd: Xyratex
-
-10.230.165.183:
-  user: root
-  host: 10.230.165.183
-  passwd: Xyratex
-  #cloudssu-1-1
-
-10.230.165.200:
-  user: root
-  host: 10.230.165.200
-  passwd: Xyratex
-  #cloudssu-1-1
 
 cmu-h02:
   user: root
@@ -136,3 +124,10 @@ udxedge1-2:
   user: root
   host: 10.230.163.89
   passwd: Xyratex
+
+10.230.166.88:
+  user: root
+  host: 10.230.166.88
+  passwd: Xyratex
+
+

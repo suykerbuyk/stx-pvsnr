@@ -3,6 +3,12 @@ node:
   00_1e_67_68_df_7e:
     - hostname: stx-prvsnr
     - role: prvsnr
+    - mgmt_port1: '00:1e:67:68:df:7c'
+    - mgmt_port2: '00:1e:67:68:df:7d'
+    - data_port1: 'e4:1d:2d:78:23:c1'
+    - data_port2: 'e4:1d:2d:78:23:c2'
+    - mgmt0_ip:   '10.230.161.52'
+    - data0_ip:   '172.19.1.212'
 
   # #############
   # Hermi 01 rack
@@ -18,7 +24,6 @@ node:
     - data0_ip:  '172.19.1.41'
     - ipmi_port: '00:50:cc:7a:80:e1'
     - ipmi:      '10.230.164.193'
-
 
   00_50_cc_79_b3_31:
     - rack: h01
@@ -249,7 +254,23 @@ node:
     - mgmt0:      '172.16.12.11'
     - ipmi:       '172.16.12.131'
 
+  # #############
+  # Mero 09 rack
+  00_50_cc_7a_6a_df:
+    - rack: m09
+    - role: cmu
+    - hostname: cmu-m09
+    - mgmt_port1: '68:05:ca:3c:f0:d7'
+    - mgmt_port2: '00:50:cc:7a:6a:dd'
+    - mgmt_port3: '00:50:cc:7a:6a:de'
+    - mgmt_port4: '00:50:cc:7a:6a:e1'
+    - data_port1: '00:50:cc:7a:6a:e2'
+    - mgmt0_ip:   '10.230.165.191'
+    - data0_ip:   ''
+    - ipmi_port:  '00:50:cc:7a:6a:df'
+    - ipmi:       '10.230.165.188'
 
+  # #############
   # mero06 clients
   00_1e_67_68_cc_0e:
     - rack: m06
@@ -284,16 +305,30 @@ node:
   00_1e_67_68_d6_c6:
     - rack: m06
     - hostname: qb03n1-m06
-    - role: s3_client
+    - role: generic
     - mgmt0: '00:1e:67:68:d6:c4'
     - data0: 'e4:1d:2d:6f:0c:41'
+
+  00_1e_67_68_d7_fe:
+    - rack: m06
+    - hostname: qb03n2-m06
+    - role: generic
+    - mgmt0: 00:1e:67:68:d7:fc
+    - data0: e4:1d:2d:6f:0c:91
+
+  00_1e_67_68_de_16:
+    - rack: m06
+    - hostname: qb03n3-m06
+    - role: generic
+    - mgmt0: 00:1e:67:68:de:14
+    - data0: e4:1d:2d:6f:8e:c1
 
   00_1e_67_68_c8_ae:
     - rack: m06
     - hostname: qb03n4-m06
-    - role: s3_client
-    - mgmt0: '00:1e:67:68:c8:ac'
-    - data0: 'e4:1d:2d:6f:8a:b2'
+    - role: generic
+    - mgmt0: 00:1e:67:68:c8:ac
+    - data0: e4:1d:2d:6f:8a:b1
 
   # UDX Nodes
   00_50_cc_79_92_d3:
