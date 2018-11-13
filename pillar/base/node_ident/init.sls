@@ -341,6 +341,12 @@ node:
     - role: generic
     - mgmt0: 00:1e:67:68:c8:ac
     - data0: e4:1d:2d:6f:8a:b1
+  
+  00_1e_67_68_cc_56:
+    - rack: m06
+    - hostname: qb04n1-m06
+    - role: generic
+    - mgmt0: '00:1e:67:68:cc:54'
 
   # UDX Nodes
   00_50_cc_79_92_d3:
