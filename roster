@@ -7,6 +7,7 @@ roster_defaults:
 cmu-m09:
   user: root
   host: 10.230.165.191
+  priv: /root/.ssh/id_rsa
   passwd: Xyratex
 
 cmu-h02:
@@ -122,8 +123,12 @@ qb03n4-m06:
 
 qb04n1-m06:
   user: root
-  host: 10.230.164.98
+  host: qb04n1-m06
   passwd: Xyratex
+
+qb05n1-m06:
+  user: root
+  host: 10.230.161.56
 
 udxedge1-2:
   user: root
@@ -135,4 +140,7 @@ udxedge1-2:
   host: 10.230.166.88
   passwd: Xyratex
 
-
+cmu-m10:
+    host: cmu-m10
+    user: root
+    passwd: Xyratex

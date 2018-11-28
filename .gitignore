@@ -2,3 +2,4 @@ pki/master/minions_pre/
 pki/master/minions/
 pki/master/minions_denied/
 pki/master/minions_rejected/
+*.log

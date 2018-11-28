@@ -5,50 +5,69 @@ sync_salt_all:
     - name: saltutil.sync_all
     - refresh: True
 
-/bin/termsize:
+cp_termsize:
   file.managed:
+    - name: /bin/termsize
     - source: salt://files/bin/termsize
     - user: root
     - group: root
     - mode: 755
+    - require:
+      - sync_salt_all
 
-/bin/stx-imager-cmu.sh:
+cp_stx_imager_cmu:
   file.managed:
+    - name: /bin/stx-imager-cmu.sh
     - source: salt://files/bin/stx-imager-cmu.sh
     - user: root
     - group: root
     - mode: 755
+    - require:
+      - cp_termsize
 
-/bin/stx-imager-ssu.sh:
+cp_stx_imager_ssu:
   file.managed:
+    - name: /bin/stx-imager-ssu.sh
     - source: salt://files/bin/stx-imager-ssu.sh
     - user: root
     - group: root
     - mode: 755
+    - require:
+      - cp_stx_imager_cmu
 
-/bin/stx-imager-blade.sh:
+cp_stx_imager_blade:
   file.managed:
+    - name: /bin/stx-imager-blade.sh
     - source: salt://files/bin/stx-imager-blade.sh
     - user: root
     - group: root
     - mode: 755
+    - require:
+      - cp_stx_imager_ssu
 
-/bin/stx-imager-generic.sh:
+cp_stx_imager_generic:
   file.managed:
+    - name: /bin/stx-imager-generic.sh
     - source: salt://files/bin/stx-imager-generic.sh
     - user: root
     - group: root
     - mode: 755
+    - require:
+      - cp_stx_imager_blade
 
-/bin/stx-wipe-disk.sh:
+cp_stx_wipe_disk:
   file.managed:
+    - name: /bin/stx-wipe-disk.sh
     - source: salt://files/bin/stx-wipe-disk.sh
     - user: root
     - group: root
     - mode: 755
+    - require:
+      - cp_stx_imager_generic
 
-/etc/yum.repos.d:
+config_local_repos:
   file.recurse:
+    - name: /etc/yum.repos.d/
     - source: salt://files/etc/yum.repos.d
     - clean: True
     - keep_source: False
@@ -56,3 +75,14 @@ sync_salt_all:
     - file_mode: 0644
     - keep_symlinks: False
     - include_empty: True
+    - require:
+      - cp_stx_wipe_disk
+
+live_minion_done:
+  cmd.run:
+    - name: "date >/root/live_minion.done"
+    - mode: 0644
+    - require:
+      - config_local_repos
+    - unless:
+      - test -f /root/live_minion.done

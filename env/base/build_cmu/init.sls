@@ -16,16 +16,101 @@ wipe_disk:
     - require:
       - sls: live_minion
     - unless:
-      - file.access /root/provisioning.done f
+      - file.file_exists /root/provisioning.done f
 
 image_boot_disk:
   cmd.run:
-    - name: /bin/stx-imager-cmu.sh /dev/{{stx_boot_disks["matching"][0]}} {{stx_image_src}}
+    - name: /bin/stx-imager-cmu.sh /dev/{{stx_boot_disks["matching"][0]}} {{mnt_point1}} {{stx_image_src}}
     - shell: /bin/bash
     - require:
       - wipe_disk
     - unless:
       - file.access /root/provisioning.done f
+
+mk_raid_disk:
+  raid.present:
+    - name: /dev/md0
+    - level: 1
+    - devices:
+      - /dev/{{stx_var_disks['matching'][0]}}
+      - /dev/{{stx_var_disks['matching'][1]}}
+    - chunk: 256
+    - run: True
+    - require:
+      - image_boot_disk
+    - unless:
+        - ls /dev/ | grep md0
+
+label_raid_disk:
+  module.run:
+    - name: partition.mklabel
+    - device: /dev/md0
+    - label_type: gpt
+    - require:
+      - mk_raid_disk
+    - unless:
+      - fdisk -l /dev/md0 | grep 'Disk label type: dos'
+
+make_swap_part:
+  module.run:
+    - name: partition.mkpartfs
+    - device: /dev/md0
+    - part_type: primary
+    - fs_type: linux-swap
+    - start: 0GB
+    - end: 64GB
+    - require:
+      - label_raid_disk
+    - unless:
+      - file.is_blkdev /dev/md0p1
+
+make_opt_part:
+  module.run:
+    - name: partition.mkpartfs
+    - device: /dev/md0
+    - part_type: primary
+    - fs_type: ext2
+    - start: 64GB
+    - end: 100%
+    - require:
+      - label_raid_disk
+      - make-swap-fs
+    - unless:
+      - file.is_blkdev /dev/md0p2
+
+make_opt_fs:
+  cmd.run:
+    - name: 'mkfs.ext4 -U 8974698e-07c0-4e84-af44-55fc3d77fce8 -L opt /dev/md0p2'
+    - require:
+      - make_opt_part
+    - unless:
+      - disk.blkid /dev/md0p2 | grep ext
+
+update_mdadm_conf:
+  cmd.run:
+    - name: 'mdadm --detail --scan /dev/md0 >{{mnt_point1}}/etc/mdadm.conf'
+    - shell: /bin/bash
+    - python_script: True
+    - require:
+      - mk_raid_disk
+
+make-opt-mntpoint:
+  cmd.run:
+    - name: '[ -d {{mnt_point1}}/opt/seagate ] || mkdir -p {{mnt_point1}}/opt/seagate'
+
+make_opt_fstab:
+  file.append:
+    - name: {{mnt_point1}}/etc/fstab
+    - text:
+      - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /opt/seagate ext4 defaults 1 1
+
+make-swap-fs:
+  cmd.run:
+    - name: 'mkswap -U d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 -L swap /dev/md0p1'
+    - require:
+      - make_swap_part
+    - unless:
+      - disk.blkid /dev/md0p1 | grep swap
 
 configure_repositories:
   file.recurse:
@@ -46,7 +131,7 @@ import_rpm_keys:
     - require:
       - configure_repositories
     - unless:
-      - test -f {{mnt_point1}}/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+      - file.file_exists {{mnt_point1}}/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 update_packages:
   cmd.run:
@@ -175,93 +260,11 @@ set_etc_host_name:
     - user: root
     - group: root
 
-/dev/md0:
-  raid.present:
-    - level: 1
-    - devices:
-      - /dev/{{stx_var_disks['matching'][0]}}
-      - /dev/{{stx_var_disks['matching'][1]}}
-    - chunk: 256
-    - run: True
-    - unless:
-        - ls /dev/ | grep md0
-
-update_mdadm_conf:
-  cmd.run:
-    - name: 'mdadm --detail --scan /dev/md0 >{{mnt_point1}}/etc/mdadm.conf'
-    - shell: /bin/bash
-    - python_script: True
-    - require:
-      - /dev/md0
-
-label_raid_disk:
-  module.run:
-    - name: partition.mklabel
-    - device: /dev/md0
-    - label_type: gpt
-    - require:
-      - /dev/md0
-    - unless:
-      - fdisk -l /dev/md0 | grep 'Disk label type: dos'
-
-make_swap_part:
-  module.run:
-    - name: partition.mkpartfs
-    - device: /dev/md0
-    - part_type: primary
-    - fs_type: linux-swap
-    - start: 0GB
-    - end: 64GB
-    - require:
-      - label_raid_disk
-    - unless:
-      - file.is_blkdev /dev/md0p1
-
-make-swap-fs:
-  cmd.run:
-    - name: 'mkswap -U d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 -L swap /dev/md0p1'
-    - require:
-      - make_swap_part
-    - unless:
-      - disk.blkid /dev/md0p1 | grep swap
-
 make_swap_fstab:
   file.append:
     - name: {{mnt_point1}}/etc/fstab
     - text:
       - UUID=d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 none swap sw 0 0
-
-make_opt_part:
-  module.run:
-    - name: partition.mkpartfs
-    - device: /dev/md0
-    - part_type: primary
-    - fs_type: ext2
-    - start: 64GB
-    - end: 100%
-    - require:
-      - label_raid_disk
-      - make-swap-fs
-    - unless:
-      - file.is_blkdev /dev/md0p2
-
-make_opt_fs:
-  cmd.run:
-    - name: 'mkfs.ext4 -U 8974698e-07c0-4e84-af44-55fc3d77fce8 -L opt /dev/md0p2'
-    - require:
-      - make_opt_part
-    - unless:
-      - disk.blkid /dev/md0p2 | grep ext
-
-make-opt-mntpoint:
-  cmd.run:
-    - name: '[ -d {{mnt_point1}}/opt/seagate ] || mkdir -p {{mnt_point1}}/opt/seagate'
-
-make_opt_fstab:
-  file.append:
-    - name: {{mnt_point1}}/etc/fstab
-    - text:
-      - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /opt/seagate ext4 defaults 1 1
 
 salt_minion_enable_service:
   cmd.run:

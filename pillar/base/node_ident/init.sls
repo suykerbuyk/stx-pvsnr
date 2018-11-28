@@ -255,6 +255,21 @@ node:
     - ipmi:       '172.16.12.131'
 
   # #############
+  # Mero 10 rack
+  00_50_cc_7a_5f_e1:
+    - rack: m10
+    - role: cmu
+    - hostname: cmu-m10
+    - mgmt_ports:
+      - port1: 00:50:cc:7a:5f:e1
+      - port2: 68:05:ca:3a:f0:0a
+    - data_ports:
+      - port1: 00:50:cc:7a:5f:e3
+      - port2: 00:50:cc:7a:5f:e4
+    - ipmi_ports:
+      - port1: 00:50:cc:7a:5f:e1
+
+  # #############
   # Mero 09 rack
   00_50_cc_7a_6a_df:
     - rack: m09
@@ -341,12 +356,18 @@ node:
     - role: generic
     - mgmt0: 00:1e:67:68:c8:ac
     - data0: e4:1d:2d:6f:8a:b1
-  
+
   00_1e_67_68_cc_56:
     - rack: m06
     - hostname: qb04n1-m06
     - role: generic
     - mgmt0: '00:1e:67:68:cc:54'
+
+  00_1e_67_68_df_ac:
+    - rack: m06
+    - hostname: qb05n1-m06
+    - role: generic
+    - mgmt0: '00:1e:67:68:df:ac'
 
   # UDX Nodes
   00_50_cc_79_92_d3:
