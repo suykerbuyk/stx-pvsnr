@@ -144,3 +144,34 @@ cmu-m10:
     host: cmu-m10
     user: root
     passwd: Xyratex
+
+ssu1-m10:
+    host: ssu1-m10
+    user: root
+    passwd: Xyratex
+
+ssu2-m10:
+    host: ssu2-m10
+    user: root
+    passwd: Xyratex
+
+ssu3-m10:
+    host: ssu3-m10
+    user: root
+    passwd: Xyratex
+
+ssu4-m10:
+    host: ssu4-m10
+    user: root
+    passwd: Xyratex
+
+ssu5-m10:
+    host: ssu5-m10
+    user: root
+    passwd: Xyratex
+
+ssu6-m10:
+    host: ssu6-m10
+    user: root
+    passwd: Xyratex
+

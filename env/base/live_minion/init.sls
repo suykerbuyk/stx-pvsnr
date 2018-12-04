@@ -15,6 +15,8 @@ cp_termsize:
     - require:
       - sync_salt_all
 
+{% if salt['grains.get']('stx_live_image') %}
+
 cp_stx_imager_cmu:
   file.managed:
     - name: /bin/stx-imager-cmu.sh
@@ -86,3 +88,5 @@ live_minion_done:
       - config_local_repos
     - unless:
       - test -f /root/live_minion.done
+
+{% endif %}
