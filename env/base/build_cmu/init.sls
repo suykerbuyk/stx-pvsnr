@@ -64,6 +64,22 @@ make_swap_part:
     - unless:
       - file.is_blkdev /dev/md0p1
 
+make_swap_fs:
+  cmd.run:
+    - name: 'mkswap -U d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 -L swap /dev/md0p1'
+    - require:
+      - make_swap_part
+    - unless:
+      - disk.blkid /dev/md0p1 | grep swap
+
+make_swap_fstab:
+  file.append:
+    - name: {{mnt_point1}}/etc/fstab
+    - text:
+      - UUID=d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 none swap sw 0 0
+    - require:
+      - make_swap_fs
+
 make_opt_part:
   module.run:
     - name: partition.mkpartfs
@@ -74,7 +90,7 @@ make_opt_part:
     - end: 100%
     - require:
       - label_raid_disk
-      - make-swap-fs
+      - make_swap_fs
     - unless:
       - file.is_blkdev /dev/md0p2
 
@@ -86,6 +102,20 @@ make_opt_fs:
     - unless:
       - disk.blkid /dev/md0p2 | grep ext
 
+make_opt_mntpoint:
+  cmd.run:
+    - name: '[ -d {{mnt_point1}}/opt/seagate ] || mkdir -p {{mnt_point1}}/opt/seagate'
+    - require:
+      - make_opt_fs
+
+make_opt_fstab:
+  file.append:
+    - name: {{mnt_point1}}/etc/fstab
+    - text:
+      - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /opt/seagate ext4 defaults 1 1
+    - require:
+      - make_opt_mnt_point
+
 update_mdadm_conf:
   cmd.run:
     - name: 'mdadm --detail --scan /dev/md0 >{{mnt_point1}}/etc/mdadm.conf'
@@ -93,24 +123,6 @@ update_mdadm_conf:
     - python_script: True
     - require:
       - mk_raid_disk
-
-make-opt-mntpoint:
-  cmd.run:
-    - name: '[ -d {{mnt_point1}}/opt/seagate ] || mkdir -p {{mnt_point1}}/opt/seagate'
-
-make_opt_fstab:
-  file.append:
-    - name: {{mnt_point1}}/etc/fstab
-    - text:
-      - UUID=8974698e-07c0-4e84-af44-55fc3d77fce8 /opt/seagate ext4 defaults 1 1
-
-make-swap-fs:
-  cmd.run:
-    - name: 'mkswap -U d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 -L swap /dev/md0p1'
-    - require:
-      - make_swap_part
-    - unless:
-      - disk.blkid /dev/md0p1 | grep swap
 
 configure_repositories:
   file.recurse:
@@ -164,7 +176,7 @@ set_minion_file:
     - source: /etc/salt/minion
     - mode: 0644
     - require:
-      - update_packages
+      - set_salt_dir_files
 
 set_minion_id:
   file.managed:
@@ -172,7 +184,7 @@ set_minion_id:
     - mode: 0644
     - source: /etc/salt/minion_id
     - require:
-      - update_packages
+      - set_minion_file
 
 set_minion_grain_file:
   file.managed:
@@ -180,7 +192,7 @@ set_minion_grain_file:
     - mode: 0644
     - source: /etc/salt/grains
     - require:
-      - update_packages
+      - set_minion_id
 
 set_bin_files:
   file.recurse:
@@ -216,7 +228,7 @@ set_network_file:
 set_bonding_config:
   file.managed:
     - name: {{mnt_point1}}/etc/modprobe.d/bonding.conf
-    - file_mode: 0755
+    - file_mode: 0644
     - require:
       - set_network_file
     - contents:
@@ -387,12 +399,6 @@ set_etc_host_name:
     - source: /etc/hostname
     - user: root
     - group: root
-
-make_swap_fstab:
-  file.append:
-    - name: {{mnt_point1}}/etc/fstab
-    - text:
-      - UUID=d8e9f0b7-aa51-47eb-9ee2-af4007dc9872 none swap sw 0 0
 
 set_nic_bios_dev_name_grub:
   file.replace:
