@@ -135,6 +135,11 @@ udxedge1-2:
   host: 10.230.163.89
   passwd: Xyratex
 
+udx-03:
+  user: root
+  host: 10.230.166.183
+  passwd: Xyratex
+
 10.230.166.88:
   user: root
   host: 10.230.166.88

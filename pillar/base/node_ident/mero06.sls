@@ -63,8 +63,9 @@ node:
     - role: generic
     - mgmt0: 00:1e:67:68:cc:54
 
-  00_1e_67_68_df_ac:
+  00_1e_67_68_df_ae:
     - rack: m06
     - hostname: qb05n1-m06
     - role: generic
     - mgmt0: 00:1e:67:68:df:ac
+    - mgmt1: 00:1e:67:68:df:ad

@@ -21,3 +21,19 @@ node:
     - data0:      '172.19.3.74'
     - mgmt0:      '10.230.163.89'
     - ipmi:       '10.230.163.91'
+
+node:
+  00_50_cc_79_db_0f:
+    - rack: m02
+    - role: generic
+    - hostname: udx-03
+    - mgmt_ports:
+      - port1: 00:50:cc:79:db:0d
+      - port2: 00:50:cc:79:db:0e
+    - data_ports:
+      - port1: 00:50:cc:79:db:12
+    - ipmi_ports:
+      - port1: 00:50:cc:79:db:0f
+    - ipmi_ip:
+      - 10.230.161.161
+
