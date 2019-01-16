@@ -335,9 +335,8 @@ set_network_data0:
       - NAME=data0
       - BOOTPROTO=dhcp
       - ONBOOT=yes
-      - DEFROUTE=yes
       - BONDING_MASTER=yes
-      - BONDING_OPTS="mode=active-backup primary=enp12s0 miimon=100"
+      - BONDING_OPTS="miimon=100 mode=802.3ad lacp_rate=1 xmit_hash_policy=1"
       - NM_CONTROLLED=no
       - USRCTL=no
       - ONBOOT=yes
