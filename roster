@@ -180,3 +180,23 @@ ssu6-m10:
     user: root
     passwd: Xyratex
 
+qb01n1-m10:
+    host: qb01n1-m10
+    user: root
+    passwd: Xyratex
+
+qb01n2-m10:
+    host: qb01n2-m10
+    user: root
+    passwd: Xyratex
+
+qb01n3-m10:
+    host: qb01n3-m10
+    user: root
+    passwd: Xyratex
+
+qb01n4-m10:
+    host: qb01n4-m10
+    user: root
+    passwd: Xyratex
+
