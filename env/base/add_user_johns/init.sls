@@ -7,7 +7,7 @@ add_user_johns:
     - createhome: True
     - password: $1$xd3Jjbbl$daitEGGRJFgr292j0KbH91
 
-copy_bashrc:
+copy_gitconfig:
     file.managed:
     - name: /home/johns/.gitconfig
     - source: salt://add_user_johns/files/gitconfig
