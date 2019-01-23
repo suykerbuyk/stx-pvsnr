@@ -4,7 +4,6 @@ include:
   - node_ident/mero02
   - node_ident/mero06
   - node_ident/mero10
-  - node_ident/udx
 
 node:
   # infrastructure nodes

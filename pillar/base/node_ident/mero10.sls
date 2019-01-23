@@ -92,4 +92,12 @@ node:
     - ipmi_ports:
       - port1: 00:50:cc:79:f5:df
 
-
+  00_1e_67_68_db_ce:
+    - rack: m10
+    - hostname: qb01n1-m10
+    - role: s3_server
+    - mgmt_ports:
+      - port1: 00:1e:67:68:db:cc
+      - port2: 00:1e:67:68:db:cd
+    - data_ports:
+      - 
