@@ -51,7 +51,7 @@ def set_ib_mode():
 			ctrl.write('ib\n')
 	return True
 
-def gen_rdma_conf_as_eth(rdma_dir='/etc/rdma/'):
+def gen_rdma_conf_as_eth(rdma_dir='/etc/rdma/', rdma_file='mlx4.conf'):
 	'''
 	Generates an rdma.conf file at the directory specified
 	Default location /etc/rdma/
@@ -59,9 +59,9 @@ def gen_rdma_conf_as_eth(rdma_dir='/etc/rdma/'):
 	'''
 	if not os.path.exists(rdma_dir):
 		os.makedirs(rdma_dir)
-	with open(rdma_dir + 'rdma.conf', 'w') as rdma_file:
+	with open(rdma_dir + rdma_file, 'w') as rdma_fhandle:
 		for slot in pci_slots():
-			rdma_file.write(slot + '   eth eth \n')
+			rdma_fhandle.write(slot + '   eth eth \n')
 	return True
 
 def present():
