@@ -100,4 +100,50 @@ node:
       - port1: 00:1e:67:68:db:cc
       - port2: 00:1e:67:68:db:cd
     - data_ports:
-      - 
+      - port1: 00:1e:67:68:db:d1
+      - port2: e4:1d:2d:6f:8e:b1
+      - port3: e4:1d:2d:6f:8e:b2
+    - ipmi_ports:
+      - port1: 00:1e:67:68:db:ce
+
+  00_1e_67_68_d3_46:
+    - rack: m10
+    - hostname: qb01n2-m10
+    - role: s3_server
+    - mgmt_ports:
+      - port1: 00:1e:67:68:d3:44
+      - port2: 00:1e:67:68:d3:45
+    - data_ports:
+      - port1: 00:1e:67:68:d3:49
+      - port2: e4:1d:2d:6f:8e:81
+      - port3: e4:1d:2d:6f:8e:82
+    - ipmi_ports:
+      - port1: 00:1e:67:68:d3:46
+
+  00_1e_67_68_d9_0e:
+    - rack: m10
+    - hostname: qb01n3-m10
+    - role: s3_server
+    - mgmt_ports:
+      - port1: 00:1e:67:68:d9:0c
+      - port2: 00:1e:67:68:d9:0d
+    - data_ports:
+      - port1: 00:1e:67:68:d9:11
+      - port2: e4:1d:2d:6f:8b:51
+      - port3: e4:1d:2d:6f:8b:52
+   - ipmi_ports:
+     - port1: 00:1e:67:68:d9:0e
+
+  00_1e_67_68_d2_de:
+    - rack: m10
+    - hostname: qb01n4-m10
+    - role: s3_server
+    - mgmt_ports:
+      - port1: 00:1e:67:68:d2:dc
+      - port2: 00:1e:67:68:d2:dd
+    - data_ports:
+      - port1: 00:1e:67:68:d2:e1
+      - port2: e4:1d:2d:6f:8e:61
+      - port3: e4:1d:2d:6f:8e:62
+    - ipmi_ports:
+      - port1: 00:1e:67:68:d2:de
