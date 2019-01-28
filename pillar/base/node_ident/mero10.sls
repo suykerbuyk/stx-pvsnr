@@ -131,8 +131,8 @@ node:
       - port1: 00:1e:67:68:d9:11
       - port2: e4:1d:2d:6f:8b:51
       - port3: e4:1d:2d:6f:8b:52
-   - ipmi_ports:
-     - port1: 00:1e:67:68:d9:0e
+    - ipmi_ports:
+      - port1: 00:1e:67:68:d9:0e
 
   00_1e_67_68_d2_de:
     - rack: m10
