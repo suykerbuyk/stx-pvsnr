@@ -51,25 +51,7 @@ salt-minion:
             - rack: {{node_rack}}
             - bmc_mac: {{port1_mac_safe}}
 
+config_mellanox:
+  cmd.run:
+    - name: 'for x in $(find /sys/devices/ -name mlx4_port?); do echo $x; echo "eth" >$x; done'
 
-# /etc/salt/minion_id:
-#   file.managed:
-#      - contents: {{ node_name }}
-# 
-# /etc/salt/grains:
-#   file.managed:
-#     - name: /etc/salt/grains
-#     - contents: |
-#         master: stx-prvsnr
-# 
-#         grains:
-#           stx:
-#             node:
-#               - role: {{node_role}}
-#               - name: {{node_name}}
-#               - rack: {{node_rack}}
-#               - bmc_mac: {{port1_mac_safe}}
-
-
-#systemctl restart salt-minion:
-#  cmd.run
