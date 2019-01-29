@@ -50,7 +50,7 @@ import_rpm_keys:
 
 update_packages:
   cmd.run:
-    - name: /bin/yum install -y --installroot={{mnt_point1}}/ tmux salt-minion
+    - name: /bin/yum install -y --installroot={{mnt_point1}}/ tmux screen salt-minion
     - require:
       - import_rpm_keys
 
@@ -79,7 +79,7 @@ set_minion_file:
     - source: /etc/salt/minion
     - mode: 0644
     - require:
-      - update_packages
+      - set_salt_dir_files
 
 set_minion_id:
   file.managed:
@@ -87,7 +87,7 @@ set_minion_id:
     - mode: 0644
     - source: /etc/salt/minion_id
     - require:
-      - update_packages
+      - set_minion_file
 
 set_minion_grain_file:
   file.managed:
@@ -95,7 +95,7 @@ set_minion_grain_file:
     - mode: 0644
     - source: /etc/salt/grains
     - require:
-      - update_packages
+      - set_minion_id
 
 set_bin_files:
   file.recurse:
@@ -109,30 +109,111 @@ set_bin_files:
     - require:
       - update_packages
 
-set_network_script_files:
-  file.recurse:
-    - name: {{mnt_point1}}/etc/sysconfig/network-scripts
-    - source: salt://build_blade/files/etc/sysconfig/network-scripts
-    - keep_source: False
-    - dir_mode: 0644
-    - file_mode: 0644
-    - clean: False
-    - keep_symlinks: False
-    - include_empty: True
-    - require:
-      - update_packages
+set_mlx4_conf:
+  file.managed:
+    - name: {{mnt_point1}}/etc/rdma/mlx4.conf
+    - contents:
+      - '0000:01:00.0 eth'
+      - '0000:02:00.0 eth eth'
 
 set_network_file:
   file.managed:
     - name: {{mnt_point1}}/etc/sysconfig/network
-    - source: salt://build_blade/files/etc/sysconfig/network
-    - dir_mode: 0644
     - file_mode: 0644
-    - clean: False
-    - keep_symlinks: False
-    - include_empty: True
     - require:
       - update_packages
+      - set_mlx4_conf
+    - contents:
+      - SEARCH=mero.colo.seagate.com
+      - NETWORKING=yes
+      - NETWORKING_IPV6=no
+      - GATEWAY=10.230.160.1
+      - GATEWAYDEV=enp5s0f0
+
+set_network_mgmt_port1:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-enp5s0f0
+    - file_mode: 0755
+    - require:
+      - set_network_file
+    - contents:
+      - TYPE=Ethernet
+      - DEVICE=enp5s0f0
+      - NAME=enp5s0f0
+      - BOOTPROTO=dhcp
+      - DEFROUTE=yes
+      - IPV4_FAILURE_FATAL=no
+      - MTU=1500
+      - NM_CONTROLLED=no
+      - ONBOOT=yes
+
+set_network_mgmt_port2:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-enp5s0f1
+    - file_mode: 0755
+    - require:
+      - set_network_file
+    - contents:
+      - TYPE=Ethernet
+      - DEVICE=enp5s0f1
+      - NAME=enp5s0f1
+      - BOOTPROTO=dhcp
+      - DEFROUTE=no
+      - IPV4_FAILURE_FATAL=no
+      - MTU=1500
+      - NM_CONTROLLED=no
+      - ONBOOT=yes
+
+set_network_data_port1:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-p1p1
+    - file_mode: 0755
+    - require:
+      - set_network_file
+    - contents:
+      - TYPE=Ethernet
+      - DEVICE=p1p1
+      - NAME=p1p1
+      - BOOTPROTO=dhcp
+      - DEFROUTE=no
+      - IPV4_FAILURE_FATAL=no
+      - MTU=9000
+      - NM_CONTROLLED=no
+      - ONBOOT=yes
+
+set_network_data_port2:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-em1
+    - file_mode: 0755
+    - require:
+      - set_network_file
+    - contents:
+      - TYPE=Ethernet
+      - DEVICE=em1
+      - NAME=em1
+      - BOOTPROTO=dhcp
+      - DEFROUTE=no
+      - IPV4_FAILURE_FATAL=no
+      - MTU=9000
+      - NM_CONTROLLED=no
+      - ONBOOT=yes
+
+set_network_data_port3:
+  file.managed:
+    - name: {{mnt_point1}}/etc/sysconfig/network-scripts/ifcfg-em2
+    - file_mode: 0755
+    - require:
+      - set_network_file
+    - contents:
+      - TYPE=Ethernet
+      - DEVICE=em2
+      - NAME=em2
+      - BOOTPROTO=dhcp
+      - DEFROUTE=no
+      - IPV4_FAILURE_FATAL=no
+      - MTU=9000
+      - NM_CONTROLLED=no
+      - ONBOOT=yes
 
 rm_ifcfg_lan0:
   file.absent:
@@ -175,6 +256,42 @@ set_etc_host_name:
     - user: root
     - group: root
 
+set_nic_bios_dev_name_grub:
+  file.replace:
+    - name: {{mnt_point1}}/etc/grub2.cfg
+    - pattern: 'biosdevname=0'
+    - repl: 'biosdevname=1'
+    - append_if_not_found: False
+    - prepend_if_not_found: False
+    - ignore_if_missing: True
+
+set_nic_bios_dev_name_boot:
+  file.replace:
+    - name: {{mnt_point1}}/boot/grub2/grub.cfg
+    - pattern: 'biosdevname=0'
+    - repl: 'biosdevname=1'
+    - append_if_not_found: False
+    - prepend_if_not_found: False
+    - ignore_if_missing: True
+
+set_nic_net_if_name_grub:
+  file.replace:
+    - name: {{mnt_point1}}/etc/grub2.cfg
+    - pattern: 'net.ifnames=0'
+    - repl: 'net.ifnames=1'
+    - append_if_not_found: False
+    - prepend_if_not_found: False
+    - ignore_if_missing: True
+
+set_nic_net_if_name_boot:
+  file.replace:
+    - name: {{mnt_point1}}/boot/grub2/grub.cfg
+    - pattern: 'net.ifnames=0'
+    - repl: 'net.ifnames=1'
+    - append_if_not_found: False
+    - prepend_if_not_found: False
+    - ignore_if_missing: True
+
 salt_minion_enable_service:
   cmd.run:
     - name: systemctl --root={{mnt_point1}} enable salt-minion
@@ -184,11 +301,5 @@ salt_minion_enable_service:
 salt_disable_firewalld:
     cmd.run:
     - name: systemctl --root={{mnt_point1}} disable firewalld
-
-set_bonding_config:
-  file.managed:
-    - name: {{mnt_point1}}/etc/modprobe.d/bonding.conf
-    - mode: 0644
-    - contents: options bonding max_bonds=0
 
 {% endif %} # if stx_live_minion
