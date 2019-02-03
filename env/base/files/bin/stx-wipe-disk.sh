@@ -44,6 +44,7 @@ for disk in $(ls /dev/sd* | grep -e '[0-9]$'); do
 	wipefs -fa ${disk}
 	dd if=/dev/zero bs=1M count=100 of=${disk}
 done
+# obiterate file system signatures in partitions
 cd /dev/
 for disk in $( ls sd* | grep -e '[^0-9]$' ) ; do
 	sz="$(cat /sys/class/block/${disk}/size)"
@@ -52,5 +53,11 @@ for disk in $( ls sd* | grep -e '[^0-9]$' ) ; do
 		wipefs -fa ${disk}
 		dd if=/dev/zero bs=1M count=100 of=${disk}
 	fi
+done
+# obliterate scsi disk partion tables
+for disk in $(find /dev/disk/by-id/ -name 'scsi-*' | grep -v part)
+do
+	wipefs -a $disk
+	dd if=/dev/zero bs=1M count=100 of=${disk}
 done
 partprobe
