@@ -69,3 +69,12 @@ node:
     - role: generic
     - mgmt0: 00:1e:67:68:df:ac
     - mgmt1: 00:1e:67:68:df:ad
+
+  a4_bf_01_1c_20_da:
+    - rack: m06
+    - hostname: i1u06-m06
+    - role: generic
+    - mgmt0: a4:bf:01:1c:20:da
+    - mgmt1: a4:bf:01:1c:20:db
+    - data0: a4:bf:01:1c:20:dc
+

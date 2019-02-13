@@ -66,6 +66,11 @@ qb01n4-h02:
   user: root
   passwd: Xyratex
 
+qbo5n1-m06:
+  user: root
+  host: qb05n1-m06
+  passwd: root
+
 qb01n2-m06:
   user: root
   host: qb01n2-m06
@@ -124,6 +129,11 @@ qb03n4-m06:
 qb04n1-m06:
   user: root
   host: qb04n1-m06
+  passwd: Xyratex
+
+qb04n2-m06:
+  user: root
+  host: qb04n2-m06
   passwd: Xyratex
 
 qb05n1-m06:
@@ -200,3 +210,12 @@ qb01n4-m10:
     user: root
     passwd: Xyratex
 
+i1u06-m06:
+    host: i1u06-m06
+    user: root
+    passwd: Xyratex
+
+i1u07-m06:
+    host: i1u07-m06
+    user: root
+    passwd: Xyratex
