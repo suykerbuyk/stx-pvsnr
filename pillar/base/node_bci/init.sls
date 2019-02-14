@@ -1,4 +1,4 @@
-{% set stx_bci_url='http://stx-prvsnr/prvsnr/sage/images' %}
+{% set stx_bci_url='http://stx-prvsnr/sage/images' %}
 {% set stx_bci_default_img='sage-CentOS-7.5.x86_64-7.5.0_3-k3.10.0.txz' %}
 
 stx_bci:
