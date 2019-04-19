@@ -3,8 +3,9 @@ include:
   - node_ident/hermi02
   - node_ident/mero02
   - node_ident/mero06
+  - node_ident/mero08
   - node_ident/mero10
-
+  - node_ident/mero07
 node:
   # infrastructure nodes
   00_1e_67_68_df_7e:
