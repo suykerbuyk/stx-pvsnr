@@ -70,11 +70,49 @@ node:
     - mgmt0: 00:1e:67:68:df:ac
     - mgmt1: 00:1e:67:68:df:ad
 
-  a4_bf_01_1c_20_da:
+  00_1e_67_b9_38_17:
     - rack: m06
     - hostname: i1u06-m06
     - role: generic
-    - mgmt0: a4:bf:01:1c:20:da
-    - mgmt1: a4:bf:01:1c:20:db
-    - data0: a4:bf:01:1c:20:dc
+    - mgmt0: 00:1e:67:b9:38:13
 
+  a4_bf_01_1b_f6_c3:
+    - rack: m06
+    - hostname: i1u07-m06
+    - role: generic
+    - mgmt0: a4:bf:01:1b:f6:c1
+
+  00_1e_67_66_f9_02:
+    - rack: m06
+    - hostname: qb06n4-m06
+    - role: blade
+
+  00_1e_67_66_d1_f2:
+    - rack: m06
+    - hostname: qb06n3-m06
+    - role: blade
+
+  00_1e_67_66_f8_c2:
+    - rack: m06
+    - hostname: qb06n2-m06
+    - role: blade
+
+  00_1e_67_67_0b_7a:
+    - rack: m06
+    - hostname: qb06n1-m06
+    - role: blade
+
+  00_50_cc_79_ab_69:
+    - rack: m06
+    - hostname: sati32a-m06
+    - role: cmu
+
+  00_50_cc_79_93_e1:
+    - rack: m06
+    - hostname: sati32b-m06
+    - role: cmu
+
+  00_1e_67_68_db_be:
+    - rack: m06
+    - hostname: qb01n2-m06
+    - role: ostackblade
