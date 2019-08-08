@@ -116,3 +116,28 @@ node:
     - rack: m06
     - hostname: qb01n2-m06
     - role: ostackblade
+
+  00_1e_67_d4_59_4d:
+    - rack: m06
+    - hostname: qb08n4-m06
+    - role: blade
+
+  00_1e_67_d4_55_d2:
+    - rack: m06
+    - hostname: qb08n3-m06
+    - role: blade
+
+  00_1e_67_d4_4a_5c:
+    - rack: m06
+    - hostname: qb08n2-m06
+    - role: blade
+
+  00_1e_67_d4_46_ab:
+    - rack: m06
+    - hostname: qb08n1-m06
+    - role: blade
+
+  00_1e_67_68_dd_56:
+    - rack: m06
+    - hostname: qbo4n2-m06
+    - role: blade

@@ -1,0 +1,8 @@
+DEVICE=eth0
+BOOTPROTO=none
+MASTER=mgmt0
+SLAVE=yes
+NM_CONTROLLED=no
+ONBOOT=yes
+TYPE=Ethernet
+USRCTL=no

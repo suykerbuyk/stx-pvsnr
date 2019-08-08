@@ -676,13 +676,13 @@ ssh_update_roster: True
 #    - /srv/salt
 #
 file_roots:
-   base:
-     - /etc/salt/env/base
-   dev:
-     - /etc/salt/env/dev
-   prod:
-     - /etc/salt/env/prod
-   staging:
+  base:
+    - /etc/salt/env/base
+  dev:
+    - /etc/salt/env/dev
+  prod:
+    - /etc/salt/env/prod
+
 # The master_roots setting configures a master-only copy of the file_roots dictionary,
 # used by the state compiler.
 #master_roots: /srv/salt-master
@@ -857,12 +857,12 @@ file_roots:
 #  - cmd_yaml: cat /etc/salt/yaml
 
 pillar_roots:
-   base:
-     - /etc/salt/pillar/base
-   dev:
-     - /etc/salt/pillar/dev
-   prod:
-     - /etc/salt/pillar/prod
+  base:
+    - /etc/salt/pillar/base
+  dev:
+    - /etc/salt/pillar/dev
+  prod:
+    - /etc/salt/pillar/prod
 
 # A list of paths to be recursively decrypted during pillar compilation.
 # Entries in this list can be formatted either as a simple string, or as a

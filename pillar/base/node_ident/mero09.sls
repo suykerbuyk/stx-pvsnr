@@ -16,7 +16,7 @@ node:
   00_50_cc_79_f5_43:
     - rack: m09
     - role: ssu
-    - hostname: ssu1-m09
+    - hostname: sati5-m09
     - mgmt_port1: '00:50:cc:79:f5:41'
     - mgmt_port2: '00:50:cc:79:f5:42'
     - data_port1: '00:50:cc:79:f5:45'
