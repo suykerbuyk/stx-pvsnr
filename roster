@@ -72,8 +72,8 @@ qbo5n1-m06:
   passwd: root
 
 qb01n2-m06:
-  user: root
   host: qb01n2-m06
+  user: root
   passwd: Xyratex
 
 qb01n3-m06:
@@ -83,12 +83,12 @@ qb01n3-m06:
 
 qb01n4-m06:
   user: root
-  host: qb01n4-m06
+  host: 10.230.161.43
   passwd: Xyratex
 
 qb02n1-m06:
-  user: root
   host: qb02n1-m06
+  user: root
   passwd: Xyratex
 
 qb02n2-m06:
@@ -175,6 +175,26 @@ ssu3-m10:
     user: root
     passwd: Xyratex
 
+qb08n4-m06:
+   host: qb08n4-m06
+   user: root
+   passwd: Xyratex
+
+qb08n3-m06:
+   host: qb08n3-m06
+   user: root
+   passwd: Xyratex
+
+qb08n2-m06:
+   host: qb08n2-m06
+   user: root
+   passwd: Xyratex
+
+qb08n1-m06:
+   host: qb08n1-m06
+   user: root
+   passwd: Xyratex
+
 ssu4-m10:
     host: ssu4-m10
     user: root
@@ -219,3 +239,103 @@ i1u07-m06:
     host: i1u07-m06
     user: root
     passwd: Xyratex
+
+sati30a-m08:
+    host: sati30a-m08
+    user: root
+    passwd: Xyratex
+
+sati30b-m08:
+    host: sati30b-m08
+    user: root
+    passwd: Xyratex
+
+sati20a-m08:
+   host: sati20a-m08
+   user: root
+   passwd: Xyratex
+
+sati20b-m08:
+   host: sati20b-m08
+   user: root
+   passwd: Xyratex
+
+sati10a-m08:
+   host: sati10a-m08
+   user: root
+   passwd: Xyratex
+
+sati10b-m08:
+   host: sati10b-m08
+   user: root
+   passwd: Xyratex
+
+qb06n4-m06:
+   host: qb06n4-m06
+   user: root
+   passwd: Xyratex
+
+qb06n3-m06:
+   host: qb06n3-m06
+   user: root
+   passwd: Xyratex
+
+qb06n2-m06:
+   host: qb06n2-m06
+   user: root
+   passwd: Xyratex
+
+qb06n1-m06:
+   host: qb06n1-m06
+   user: root
+   passwd: Xyratex
+
+sati35a-m07:
+   host: sati35a-m07
+   user: root
+   passwd: Xyratex
+
+sati35b-m07:
+   host: sati35b-m07
+   user: root
+   passwd: Xyratex
+
+sati25a-m07:
+   host: sati25a-m07
+   user: root
+   passwd: Xyratex
+
+sati25b-m07:
+   host: sati25b-m07
+   user: root
+   passwd: Xyratex
+
+sati15a-m07:
+   host: sati15a-m07
+   user: root
+   passwd: Xyratex
+
+sati15b-m07:
+   host: sati15b-m07
+   user: root
+   passwd: Xyratex
+
+sati32a-m06:
+   host: sati32a-m06
+   user: root
+   passwd: Xyratex
+
+sati32b-m06:
+   host: sati32b-m06
+   user: root
+   passwd: Xyratex
+
+sati5-m09:
+   host: sati5-m09
+   user: root
+   passwd: Xyratex
+
+i1u36-m04:
+   host: i1u36-m04
+   user: root
+   passwd: Xyratex
